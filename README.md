@@ -35,16 +35,16 @@ TasteManager é uma aplicação desenvolvida em **Java 21** utilizando o framewo
    docker build -t tastemanager-app .
    ```
 
-3. Suba a aplicação com Docker Compose:
+4. Suba a aplicação com Docker Compose:
    ```bash
    docker-compose up --build
    ```
 
-4. Acesse a aplicação:
+5. Acesse a aplicação:
     - **URL base**: `http://localhost:8080`
    ```
 
-5. Observação:
+6. Observação:
     - A aplicação utiliza o banco H2
     - Há anotações para criação da table e campos automaticamente
     - Para otimizar, á um script que insere dados iniciais no banco
