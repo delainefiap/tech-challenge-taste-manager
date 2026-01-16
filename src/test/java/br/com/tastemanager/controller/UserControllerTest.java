@@ -1,6 +1,6 @@
 package br.com.tastemanager.controller;
 
-import br.com.tastemanager.dto.request.ChangePasswordRequest;
+import br.com.tastemanager.dto.request.ChangePasswordRequestDTO;
 import br.com.tastemanager.dto.request.UserRequestDTO;
 import br.com.tastemanager.dto.request.UserUpdateRequestDTO;
 import br.com.tastemanager.dto.response.UserResponseDTO;
@@ -75,7 +75,7 @@ class UserControllerTest {
     @Test
     void testChangePassword() {
         Long userId = 1L;
-        ChangePasswordRequest changePasswordRequest = new ChangePasswordRequest();
+        ChangePasswordRequestDTO changePasswordRequest = new ChangePasswordRequestDTO();
 
         doNothing().when(userService).updatePassword(userId, changePasswordRequest);
 

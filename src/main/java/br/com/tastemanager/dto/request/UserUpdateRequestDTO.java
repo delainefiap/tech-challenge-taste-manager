@@ -1,10 +1,13 @@
 package br.com.tastemanager.dto.request;
 
+import br.com.tastemanager.entity.UserType;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 
+@Schema(description = "DTO para atualização de dados do usuário")
 public class UserUpdateRequestDTO {
 
     @JsonProperty("name")
@@ -16,8 +19,8 @@ public class UserUpdateRequestDTO {
     @Email(message = "The email must be valid and cannot be blank.")
     private String email;
 
-    @JsonProperty("typePerson")
-    private String typePerson;
+    @JsonProperty("userTypeId")
+    private UserType userTypeId;
 
     @JsonProperty("address")
     private String address;
@@ -43,13 +46,12 @@ public class UserUpdateRequestDTO {
         this.email = email;
     }
 
-
-    public String getTypePerson() {
-        return typePerson;
+    public UserType getUserTypeId() {
+        return userTypeId;
     }
 
-    public void setTypePerson(String typePerson) {
-        this.typePerson = typePerson;
+    public void setUserTypeId(UserType userTypeId) {
+        this.userTypeId = userTypeId;
     }
 
     public String getAddress() {
@@ -59,4 +61,6 @@ public class UserUpdateRequestDTO {
     public void setAddress(String address) {
         this.address = address;
     }
+
+
 }

@@ -1,13 +1,13 @@
 package br.com.tastemanager.service;
 
-import br.com.tastemanager.dto.request.ChangePasswordRequest;
 import br.com.tastemanager.repository.UserRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 
 @Service
 public class PasswordService {
-
+    private static final Logger logger = LoggerFactory.getLogger(PasswordService.class);
     private final UserRepository userRepository;
 
     public PasswordService(UserRepository userRepository) {

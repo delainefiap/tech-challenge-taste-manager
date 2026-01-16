@@ -8,6 +8,7 @@ public class UserValidator {
 
     private final UserRepository userRepository;
 
+
     public UserValidator(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
@@ -21,6 +22,12 @@ public class UserValidator {
     public void validateUserExistsById(Long id) {
         if (!userRepository.findById(id).isPresent()) {
             throw new IllegalArgumentException("User with the given ID does not exist.");
+        }
+    }
+
+    public void validateEmailAvailability(String email) {
+        if (userRepository.findAll().stream().anyMatch(u -> u.getEmail().equalsIgnoreCase(email))) {
+            throw new IllegalArgumentException("This email is unavailable. Please choose a different one.");
         }
     }
 }

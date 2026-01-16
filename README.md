@@ -8,15 +8,15 @@ TasteManager é uma aplicação desenvolvida em **Java 21** utilizando o framewo
 - **Spring Boot**
 - **Maven**
 - **MapStruct** (para mapeamento de DTOs)
-- **Docker** (opcional, para containerização)
-- **Banco de Dados SQL** (H2)
+- **Docker** (recomendado, para containerização)
+- **Banco de Dados SQL** (MySQL via Docker Compose)
 
 ## Pré-requisitos
 
 - **Java 21** ou superior
 - **Maven**
-- **Docker** (opcional)
-- **H2** configurado
+- **Docker**
+- **MySQL** (usado via Docker Compose)
 
 ## Configuração do Projeto
 
@@ -35,20 +35,18 @@ TasteManager é uma aplicação desenvolvida em **Java 21** utilizando o framewo
    docker build -t tastemanager-app .
    ```
 
-4. Suba a aplicação com Docker Compose:
+4. Suba a aplicação com Docker Compose (MySQL + App):
    ```bash
    docker-compose up --build
    ```
 
 5. Acesse a aplicação:
     - **URL base**: `http://localhost:8080`
-   ```
 
 6. Observação:
-    - A aplicação utiliza o banco H2
-    - Há anotações para criação da table e campos automaticamente
-    - Para otimizar, á um script que insere dados iniciais no banco
-    
+    - A aplicação utiliza o banco MySQL por padrão via Docker Compose.
+    - Para rodar localmente sem Docker, ajuste o `spring.datasource.url` para `localhost` no `application.properties`.
+    - O banco é criado automaticamente e há script para dados iniciais.
 
 ## Endpoints da API
 

@@ -17,7 +17,7 @@ public interface UserMapper {
     @Mapping(target = "password", source = "password")
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "lastUpdate", ignore = true)
-    @Mapping(target = "typePerson", source = "typePerson")
+    @Mapping(target = "userTypeId", source = "userTypeId")
     @Mapping(target = "address", source = "address")
     User UserRequestDtoToEntity(UserRequestDTO dto);
 
@@ -25,14 +25,14 @@ public interface UserMapper {
     @Mapping(target = "name", source = "name")
     @Mapping(target = "email", source = "email")
     @Mapping(target = "lastUpdate", ignore = true)
-    @Mapping(target = "typePerson", source = "typePerson")
+    @Mapping(target = "userTypeId", source = "userTypeId")
     @Mapping(target = "address", source = "address")
     User userUpdateRequestDtoToEntity(UserUpdateRequestDTO dto);
 
     @Mapping(target = "name", source = "name")
     @Mapping(target = "email", source = "email")
     @Mapping(target = "login", source = "login")
-    @Mapping(target = "typePerson", source = "typePerson")
+    @Mapping(target = "userTypeId", source = "userTypeId")
     @Mapping(target = "address", source = "address")
     UserResponseDTO userToUserResponseDto(User user);
 
