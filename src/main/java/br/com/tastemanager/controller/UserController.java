@@ -72,6 +72,6 @@ public class UserController implements UserControllerDocs {
 
     public ResponseEntity<List<UserResponseDTO>> findUsersByName(@RequestParam String name) {
         var users = userService.findUsersByName(name);
-        return ResponseEntity.ok(users);
+        return ResponseEntity.status(HttpStatus.OK).body(users);
     }
 }

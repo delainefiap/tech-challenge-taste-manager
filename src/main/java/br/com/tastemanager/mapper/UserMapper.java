@@ -29,11 +29,13 @@ public interface UserMapper {
     @Mapping(target = "address", source = "address")
     User userUpdateRequestDtoToEntity(UserUpdateRequestDTO dto);
 
+    @Mapping(target = "id", source = "id")
     @Mapping(target = "name", source = "name")
     @Mapping(target = "email", source = "email")
     @Mapping(target = "login", source = "login")
-    @Mapping(target = "userTypeId", source = "userTypeId")
+    @Mapping(target = "userTypeId", expression = "java(new br.com.tastemanager.dto.response.UserTypeIdResponseDTO(user.getUserTypeId().getName()))")
     @Mapping(target = "address", source = "address")
+    @Mapping(target = "lastUpdate", source = "lastUpdate")
     UserResponseDTO userToUserResponseDto(User user);
 
 }

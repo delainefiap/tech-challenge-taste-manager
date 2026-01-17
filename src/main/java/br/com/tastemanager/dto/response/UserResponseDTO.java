@@ -1,13 +1,25 @@
 package br.com.tastemanager.dto.response;
 
+import java.util.Date;
+
 public class UserResponseDTO {
 
+    private Long id;
     private String name;
     private String email;
     private String login;
 
     private UserTypeIdResponseDTO userTypeId;
     private String address;
+    private Date lastUpdate;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     public String getName() {
         return name;
@@ -47,6 +59,14 @@ public class UserResponseDTO {
 
     public void setAddress(String address) {
         this.address = address;
+    }
+
+    public Date getLastUpdate() {
+        return lastUpdate;
+    }
+
+    public void setLastUpdate(Date lastUpdate) {
+        this.lastUpdate = lastUpdate;
     }
 
 }

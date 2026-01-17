@@ -41,7 +41,7 @@ public class User {
     @Column(name = "created_at", nullable = false, updatable = false)
     @Temporal(TemporalType.TIMESTAMP)
     private Date createdAt;
-    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss", timezone = "America/Sao_Paulo")
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX", timezone = "America/Sao_Paulo")
     @Column(name = "last_update")
     private Date lastUpdate;
     @ManyToOne(targetEntity = UserType.class, fetch = FetchType.EAGER)
