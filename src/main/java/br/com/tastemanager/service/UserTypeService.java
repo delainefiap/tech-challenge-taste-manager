@@ -46,9 +46,7 @@ public class UserTypeService {
     }
 
     public String deleteUserType(Long id) {
-        if (!userTypeRepository.existsById(id)) {
-            throw new IllegalArgumentException("UserType do not exists");
-        }
+        userTypeValidator.validateUserTypeExistsById(id);
         userTypeValidator.validateUserTypeIsInUse(id);
         userTypeRepository.deleteById(id);
         return "User type deleted successfully";

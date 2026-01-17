@@ -48,10 +48,15 @@ TasteManager é uma aplicação desenvolvida em **Java 21** utilizando o framewo
     - Para rodar localmente sem Docker, ajuste o `spring.datasource.url` para `localhost` no `application.properties`.
     - O banco é criado automaticamente e há script para dados iniciais.
 
+7. Como para a aplicação:
+```bash
+   docker-compose down
+   ```
+
 ## Endpoints da API
 
 ### 1. Criar Usuário
-- **POST** `/user/create`
+- **POST** `/api/v1/user/create`
 - **Descrição**: Cria um novo usuário.
 - **Regras**:
     - `login` deve ser único.
@@ -59,7 +64,7 @@ TasteManager é uma aplicação desenvolvida em **Java 21** utilizando o framewo
 - **Resposta**: `201 Created`
 
 ### 2. Atualizar Usuário
-- **PUT** `/user/update/{id}`
+- **PUT** `/api/v1/user/update/{id}`
 - **Descrição**: Atualiza dados permitidos de um usuário existente.
 - **Campos permitidos**: `name`, `email`, `typePerson`, `address`
 - **Regras**:
@@ -68,7 +73,7 @@ TasteManager é uma aplicação desenvolvida em **Java 21** utilizando o framewo
 - **Resposta**: `200 OK`
 
 ### 3. Trocar Senha
-- **PUT** `/user/update-password/{id}`
+- **PUT** `/api/v1/user/update-password/{id}`
 - **Descrição**: Altera a senha do usuário.
 - **Regras**:
     - Senha atual deve estar correta.
@@ -76,14 +81,14 @@ TasteManager é uma aplicação desenvolvida em **Java 21** utilizando o framewo
 - **Resposta**: `200 OK`
 
 ### 4. Deletar Usuário
-- **DELETE** `/user/delete/{id}`
+- **DELETE** `/api/v1/user/delete/{id}`
 - **Descrição**: Remove um usuário.
 - **Regras**:
     - Usuário deve existir.
 - **Resposta**: `200 OK`
 
 ### 5. Validar Login
-- **POST** `/user/login`
+- **POST** `/api/v1/user/validate-login`
 - **Descrição**: Verifica se login e senha são válidos.
 - **Regras**:
     - `login` e `password` não podem estar vazios.
@@ -92,18 +97,49 @@ TasteManager é uma aplicação desenvolvida em **Java 21** utilizando o framewo
     - `401 Unauthorized` se inválidas.
 
 ### 6. Listar Usuários
-- **GET** `/user/all`
+- **GET** `/api/v1/user/all`
 - **Descrição**: Lista usuários com suporte à paginação.
 - **Parâmetros**:
     - `size` (opcional): número de usuários por página.
     - `offset` (opcional): posição inicial.
 - **Resposta**: `200 OK` com lista paginada.
 
+### 7. Buscar Usuários por Nome
+- **GET** `/api/v1/user/search?name=...`
+- **Descrição**: Busca usuários cujo nome contenha o termo informado (case-insensitive, ignora espaços).
+- **Regras**:
+    - Retorna lista de usuários encontrados.
+    - Retorna erro ou lista vazia se não houver correspondência.
+- **Resposta**: `200 OK` com lista de usuários.
+
+## Documentação Swagger/OpenAPI
+
+A documentação interativa dos endpoints está disponível em:
+- [http://localhost:8080/swagger-ui.html](http://localhost:8080/swagger-ui.html)
+- [http://localhost:8080/api-docs](http://localhost:8080/api-docs)
+
+Na interface Swagger, você pode visualizar exemplos de requisições e respostas de sucesso e erro (incluindo ProblemDetail).
+
+Exemplo de resposta de erro (ProblemDetail):
+```json
+{
+  "type": "https://example.com/validation-error",
+  "title": "Validation Error",
+  "status": 400,
+  "detail": "Erro de validação nos campos enviados.",
+  "instance": "/api/v1/user",
+  "errors": {
+    "email": "E-mail is mandatory.",
+    "name": "You must provide a name."
+  }
+}
+```
+
 ## Regras Gerais de Validação
 
 - **name**: obrigatório, não pode ser nulo, vazio ou apenas espaços.
 - **email**: obrigatório e válido.
-- **typePerson**: deve ser `customer` ou `restaurant_owner`.
+- **typePerson**: deve ser `1` para `cliente` ou `2` para `dono_restaurante`.
 - **address**: opcional, mas válido se fornecido.
 - **login**: definido na criação, não pode ser alterado.
 - **password**: só pode ser alterado pelo endpoint de troca de senha.

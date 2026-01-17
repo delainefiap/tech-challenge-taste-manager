@@ -25,6 +25,9 @@ public class UserUpdateRequestDTO {
     @JsonProperty("address")
     private String address;
 
+    @JsonProperty("typePerson")
+    private String typePerson;
+
     @JsonAnySetter
     public void handleUnknownField(String key, Object value) {
         throw new IllegalArgumentException("It is not possible to change this field or it doesn't exist : " + key);
@@ -62,5 +65,11 @@ public class UserUpdateRequestDTO {
         this.address = address;
     }
 
+    public String getTypePerson() {
+        return typePerson;
+    }
 
+    public void setTypePerson(String typePerson) {
+        this.typePerson = typePerson;
+    }
 }

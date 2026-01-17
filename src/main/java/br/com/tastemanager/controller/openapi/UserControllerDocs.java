@@ -22,16 +22,72 @@ import java.util.List;
 public interface UserControllerDocs {
     @Operation(
         summary = "Realiza a criação de um usuário.",
-        description = "Cria um novo usuário no sistema e retorna os dados do usuário criado."
+        description = "Cria um novo usuário no sistema e retorna os dados do usuário criado.",
+        requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+            required = true,
+            content = @io.swagger.v3.oas.annotations.media.Content(
+                mediaType = "application/json",
+                schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = UserRequestDTO.class),
+                examples = @io.swagger.v3.oas.annotations.media.ExampleObject(
+                    value = "{ 'name': 'João', 'email': 'joao@email.com', 'login': 'joao', 'password': 'senha123', 'typePerson': 'cliente', 'address': 'Rua 1' }"
+                )
+            )
+        )
     )
-    @ApiResponse(responseCode = "201", description = "Usuário criado com sucesso.")
+    @ApiResponses({
+        @ApiResponse(responseCode = "201", description = "Usuário criado com sucesso.",
+            content = @io.swagger.v3.oas.annotations.media.Content(
+                mediaType = "application/json",
+                schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = UserResponseDTO.class),
+                examples = @io.swagger.v3.oas.annotations.media.ExampleObject(
+                    value = "{ 'name': 'João', 'email': 'joao@email.com', 'login': 'joao', 'typePerson': '1', 'address': 'Rua 1' }"
+                )
+            )
+        ),
+        @ApiResponse(responseCode = "400", description = "Erro de validação.",
+            content = @io.swagger.v3.oas.annotations.media.Content(
+                mediaType = "application/problem+json",
+                schema = @io.swagger.v3.oas.annotations.media.Schema(
+                    example = "{ 'type': 'https://example.com/validation-error', 'title': 'Validation Error', 'status': 400, 'detail': 'Erro de validação nos campos enviados.', 'instance': '/api/v1/user/create', 'errors': { 'email': 'E-mail is mandatory.', 'name': 'You must provide a name.' } }"
+                )
+            )
+        )
+    })
     @PostMapping("/create")
     ResponseEntity<UserResponseDTO> createUser(@Valid @RequestBody UserRequestDTO userRequest);
 
     @Operation(
         summary = "Realiza a atualização de um usuário.",
-        description = "Atualiza os dados de um usuário existente pelo ID."
+        description = "Atualiza os dados de um usuário existente pelo ID.",
+        requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+            required = true,
+            content = @io.swagger.v3.oas.annotations.media.Content(
+                mediaType = "application/json",
+                schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = UserUpdateRequestDTO.class),
+                examples = @io.swagger.v3.oas.annotations.media.ExampleObject(
+                    value = "{ 'name': 'Maria', 'email': 'maria@email.com', 'typePerson': '1', 'address': 'Rua 2' }"
+                )
+            )
+        )
     )
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "Usuário atualizado com sucesso.",
+            content = @io.swagger.v3.oas.annotations.media.Content(
+                mediaType = "application/json",
+                examples = @io.swagger.v3.oas.annotations.media.ExampleObject(
+                    value = "Usuário atualizado com sucesso."
+                )
+            )
+        ),
+        @ApiResponse(responseCode = "400", description = "Erro de validação.",
+            content = @io.swagger.v3.oas.annotations.media.Content(
+                mediaType = "application/problem+json",
+                schema = @io.swagger.v3.oas.annotations.media.Schema(
+                    example = "{ 'type': 'https://example.com/validation-error', 'title': 'Validation Error', 'status': 400, 'detail': 'Erro de validação nos campos enviados.', 'instance': '/api/v1/user/update/{id}', 'errors': { 'email': 'E-mail is mandatory.' } }"
+                )
+            )
+        )
+    })
     @PatchMapping("/update/{id}")
     ResponseEntity<String> updateUser(@PathVariable Long id, @RequestBody UserUpdateRequestDTO userRequest);
 
@@ -39,23 +95,92 @@ public interface UserControllerDocs {
         summary = "Realiza a exclusão de um usuário.",
         description = "Exclui um usuário do sistema pelo ID."
     )
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "Usuário excluído com sucesso.",
+            content = @io.swagger.v3.oas.annotations.media.Content(
+                mediaType = "application/json",
+                examples = @io.swagger.v3.oas.annotations.media.ExampleObject(
+                    value = "Usuário deletado com sucesso."
+                )
+            )
+        ),
+        @ApiResponse(responseCode = "404", description = "Usuário não encontrado.",
+            content = @io.swagger.v3.oas.annotations.media.Content(
+                mediaType = "application/problem+json",
+                schema = @io.swagger.v3.oas.annotations.media.Schema(
+                    example = "{ 'type': 'https://example.com/not-found', 'title': 'User Not Found', 'status': 404, 'detail': 'User not found', 'instance': '/api/v1/user/delete' }"
+                )
+            )
+        )
+    })
     @DeleteMapping("/delete")
     ResponseEntity<String> deleteUser(@RequestParam Long id);
 
     @Operation(
         summary = "Troca a senha do usuário.",
-        description = "Altera a senha de um usuário identificado pelo ID."
+        description = "Altera a senha de um usuário identificado pelo ID.",
+        requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+            required = true,
+            content = @io.swagger.v3.oas.annotations.media.Content(
+                mediaType = "application/json",
+                schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = ChangePasswordRequestDTO.class),
+                examples = @io.swagger.v3.oas.annotations.media.ExampleObject(
+                    value = "{ 'oldPassword': 'senha123', 'newPassword': 'novaSenha456' }"
+                )
+            )
+        )
     )
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "Senha alterada com sucesso.",
+            content = @io.swagger.v3.oas.annotations.media.Content(
+                mediaType = "application/json",
+                examples = @io.swagger.v3.oas.annotations.media.ExampleObject(
+                    value = "Password changed successfully."
+                )
+            )
+        ),
+        @ApiResponse(responseCode = "400", description = "Erro de validação ou senha incorreta.",
+            content = @io.swagger.v3.oas.annotations.media.Content(
+                mediaType = "application/problem+json",
+                schema = @io.swagger.v3.oas.annotations.media.Schema(
+                    example = "{ 'type': 'https://example.com/validation-error', 'title': 'Validation Error', 'status': 400, 'detail': 'Nova senha não pode ser nula ou composta apenas por espaços.', 'instance': '/api/v1/user/change-password/{id}' }"
+                )
+            )
+        )
+    })
     @PostMapping("/change-password/{id}")
     ResponseEntity<String> changePassword(@PathVariable Long id, @Valid @RequestBody ChangePasswordRequestDTO changePasswordRequestDTO);
 
     @Operation(
         summary = "Valida o login do usuário.",
-        description = "Valida as credenciais de login do usuário. Retorna sucesso ou falha."
+        description = "Valida as credenciais de login do usuário. Retorna sucesso ou falha.",
+        requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+            required = true,
+            content = @io.swagger.v3.oas.annotations.media.Content(
+                mediaType = "application/json",
+                examples = @io.swagger.v3.oas.annotations.media.ExampleObject(
+                    value = "{ 'login': 'joao', 'password': 'senha123' }"
+                )
+            )
+        )
     )
     @ApiResponses({
-        @ApiResponse(responseCode = "200", description = "Login bem-sucedido."),
-        @ApiResponse(responseCode = "401", description = "Credenciais inválidas.")
+        @ApiResponse(responseCode = "200", description = "Login bem-sucedido.",
+            content = @io.swagger.v3.oas.annotations.media.Content(
+                mediaType = "application/json",
+                examples = @io.swagger.v3.oas.annotations.media.ExampleObject(
+                    value = "Login successful"
+                )
+            )
+        ),
+        @ApiResponse(responseCode = "401", description = "Credenciais inválidas.",
+            content = @io.swagger.v3.oas.annotations.media.Content(
+                mediaType = "application/problem+json",
+                schema = @io.swagger.v3.oas.annotations.media.Schema(
+                    example = "{ 'type': 'https://example.com/unauthorized', 'title': 'Unauthorized', 'status': 401, 'detail': 'Invalid credentials', 'instance': '/api/v1/user/validate-login' }"
+                )
+            )
+        )
     })
     @PostMapping("/validate-login")
     ResponseEntity<String> validateLogin(@RequestParam String login, @RequestParam String password);
@@ -64,13 +189,37 @@ public interface UserControllerDocs {
         summary = "Pesquisa todos os usuários cadastrados.",
         description = "Retorna uma lista paginada de todos os usuários cadastrados."
     )
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "Lista de usuários encontrada.",
+            content = @io.swagger.v3.oas.annotations.media.Content(
+                mediaType = "application/json",
+                schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = UserResponseDTO.class)
+            )
+        )
+    })
     @GetMapping("/find-all")
     ResponseEntity<?> findAllUsers(@RequestParam int page, @RequestParam int size);
 
     @Operation(
-            summary = "Procura usuários pelo nome.",
-            description ="Retorna uma lista de todos os usuários encontrados com o nome pesquisado."
+        summary = "Busca usuários pelo nome.",
+        description = "Retorna uma lista de todos os usuários encontrados com o nome pesquisado."
+    )
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "Lista de usuários encontrada.",
+            content = @io.swagger.v3.oas.annotations.media.Content(
+                mediaType = "application/json",
+                schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = UserResponseDTO.class)
             )
+        ),
+        @ApiResponse(responseCode = "404", description = "Nenhum usuário encontrado.",
+            content = @io.swagger.v3.oas.annotations.media.Content(
+                mediaType = "application/problem+json",
+                schema = @io.swagger.v3.oas.annotations.media.Schema(
+                    example = "{ 'type': 'https://example.com/not-found', 'title': 'User Not Found', 'status': 404, 'detail': 'User not found', 'instance': '/api/v1/user/find-by-name' }"
+                )
+            )
+        )
+    })
     @GetMapping("/find-by-name")
     ResponseEntity<List<UserResponseDTO>> findUsersByName(@RequestParam String name);
 }

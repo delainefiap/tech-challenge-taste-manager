@@ -1,12 +1,14 @@
 package br.com.tastemanager.exception;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -14,34 +16,52 @@ import java.util.Map;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<Map<String, String>> handleValidationExceptions(MethodArgumentNotValidException ex) {
+    public ResponseEntity<ProblemDetail> handleValidationExceptions(MethodArgumentNotValidException ex) {
+        ProblemDetail problemDetail = ProblemDetail.forStatus(HttpStatus.BAD_REQUEST.value());
+        problemDetail.setType(java.net.URI.create("https://example.com/validation-error"));
+        problemDetail.setTitle("Validation Error");
+        problemDetail.setDetail("Erro de validação nos campos enviados.");
+        problemDetail.setInstance(java.net.URI.create("/api/v1/user"));
         Map<String, String> errors = new HashMap<>();
         for (FieldError error : ex.getBindingResult().getFieldErrors()) {
             errors.put(error.getField(), error.getDefaultMessage());
         }
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
+        problemDetail.setProperty("errors", errors);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(problemDetail);
     }
 
     @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<String> handleIllegalArgumentException(IllegalArgumentException ex) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+    public ResponseEntity<ProblemDetail> handleIllegalArgumentException(IllegalArgumentException ex) {
+        ProblemDetail problemDetail = ProblemDetail.forStatus(HttpStatus.BAD_REQUEST.value());
+        problemDetail.setType(java.net.URI.create("https://example.com/illegal-argument"));
+        problemDetail.setTitle("Illegal Argument");
+        problemDetail.setDetail(ex.getMessage());
+        problemDetail.setInstance(java.net.URI.create("/api/v1/user"));
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(problemDetail);
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<String> handleGeneralException(Exception ex) {
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An unexpected error occurred: " + ex.getMessage());
+    public ResponseEntity<ProblemDetail> handleGeneralException(Exception ex) {
+        ProblemDetail problem = ProblemDetail.forStatusAndDetail(HttpStatus.INTERNAL_SERVER_ERROR, "An unexpected error occurred: " + ex.getMessage());
+        problem.setTitle("Internal Server Error");
+        problem.setType(URI.create("https://datatracker.ietf.org/doc/html/rfc7807#section-3.1"));
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(problem);
     }
 
     @ExceptionHandler(UserNotFoundException.class)
-    public ResponseEntity<String> handleUserNotFoundException(UserNotFoundException ex) {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
+    public ResponseEntity<ProblemDetail> handleUserNotFoundException(UserNotFoundException ex) {
+        ProblemDetail problem = ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, ex.getMessage());
+        problem.setTitle("User Not Found");
+        problem.setType(URI.create("https://datatracker.ietf.org/doc/html/rfc7807#section-3.1"));
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(problem);
     }
 
     @ExceptionHandler(UserTypeNotFoundException.class)
-    public ResponseEntity<Map<String, Object>> handleUserTypeNotFoundException(UserTypeNotFoundException ex) {
-        Map<String, Object> response = new HashMap<>();
-        response.put("error", ex.getMessage());
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+    public ResponseEntity<ProblemDetail> handleUserTypeNotFoundException(UserTypeNotFoundException ex) {
+        ProblemDetail problem = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, ex.getMessage());
+        problem.setTitle("User Type Not Found");
+        problem.setType(URI.create("https://datatracker.ietf.org/doc/html/rfc7807#section-3.1"));
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(problem);
     }
 
 }
