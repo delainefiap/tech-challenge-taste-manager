@@ -31,12 +31,14 @@ public class UserController implements UserControllerDocs {
         this.userService = userService;
     }
 
+    @PostMapping("/create")
     public ResponseEntity<UserResponseDTO> createUser(@Valid @RequestBody UserRequestDTO userRequest) {
         var response = this.userService.createUser(userRequest);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
+    @PatchMapping("/update/{id}")
     public ResponseEntity<String> updateUser(@PathVariable Long id,
                                              @RequestBody UserUpdateRequestDTO userRequest) {
         var response = this.userService.updateUser(id, userRequest);
@@ -45,12 +47,14 @@ public class UserController implements UserControllerDocs {
     }
 
 
+    @DeleteMapping("/delete")
     public ResponseEntity<String> deleteUser(@RequestParam Long id) {
         var response = this.userService.deleteUser(id);
         return ResponseEntity.status(HttpStatus.OK).body(response);
 
     }
 
+    @PostMapping("/change-password/{id}")
     public ResponseEntity<String> changePassword(@PathVariable Long id,
                                                  @Valid @RequestBody ChangePasswordRequestDTO changePasswordRequestDTO) {
         this.userService.updatePassword(id, changePasswordRequestDTO);
@@ -58,18 +62,21 @@ public class UserController implements UserControllerDocs {
     }
 
 
+    @PostMapping("/validate-login")
     public ResponseEntity<String> validateLogin(@RequestParam String login, @RequestParam String password) {
         boolean isValid = userService.validateLogin(login, password);
         return isValid ? ResponseEntity.ok("Login successful")
                 : ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");
     }
 
+    @GetMapping("/find-all")
     public ResponseEntity<?> findAllUsers(@RequestParam int page, @RequestParam int size) {
         var users = userService.findAllUsers(page, size);
         return ResponseEntity.status(HttpStatus.OK).body(users);
     }
 
 
+    @GetMapping("/find-by-name")
     public ResponseEntity<List<UserResponseDTO>> findUsersByName(@RequestParam String name) {
         var users = userService.findUsersByName(name);
         return ResponseEntity.status(HttpStatus.OK).body(users);

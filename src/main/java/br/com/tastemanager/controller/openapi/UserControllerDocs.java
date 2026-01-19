@@ -29,7 +29,7 @@ public interface UserControllerDocs {
                 mediaType = "application/json",
                 schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = UserRequestDTO.class),
                 examples = @io.swagger.v3.oas.annotations.media.ExampleObject(
-                    value = "{ 'name': 'João', 'email': 'joao@email.com', 'login': 'joao', 'password': 'senha123', 'typePerson': 'cliente', 'address': 'Rua 1' }"
+                    value = "{ 'name': 'João', 'email': 'joao@email.com', 'login': 'joao', 'password': 'senha123', 'userTypeId': { 'id': 1 }, 'address': 'Rua 1' }"
                 )
             )
         )
@@ -40,7 +40,7 @@ public interface UserControllerDocs {
                 mediaType = "application/json",
                 schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = UserResponseDTO.class),
                 examples = @io.swagger.v3.oas.annotations.media.ExampleObject(
-                    value = "{ 'name': 'João', 'email': 'joao@email.com', 'login': 'joao', 'typePerson': '1', 'address': 'Rua 1' }"
+                    value = "{ 'id': 1, 'name': 'João', 'email': 'joao@email.com', 'login': 'joao', 'userTypeId': { 'name': 'CLIENTE' }, 'address': 'Rua 1', 'lastUpdate': '2026-01-19T12:34:56.000Z' }"
                 )
             )
         ),
@@ -65,7 +65,7 @@ public interface UserControllerDocs {
                 mediaType = "application/json",
                 schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = UserUpdateRequestDTO.class),
                 examples = @io.swagger.v3.oas.annotations.media.ExampleObject(
-                    value = "{ 'name': 'Maria', 'email': 'maria@email.com', 'typePerson': '1', 'address': 'Rua 2' }"
+                    value = "{ 'name': 'Maria', 'email': 'maria@email.com', 'userTypeId': { 'id': 1 }, 'address': 'Rua 2' }"
                 )
             )
         )
@@ -74,9 +74,7 @@ public interface UserControllerDocs {
         @ApiResponse(responseCode = "200", description = "Usuário atualizado com sucesso.",
             content = @io.swagger.v3.oas.annotations.media.Content(
                 mediaType = "application/json",
-                examples = @io.swagger.v3.oas.annotations.media.ExampleObject(
-                    value = "Usuário atualizado com sucesso."
-                )
+                schema = @io.swagger.v3.oas.annotations.media.Schema(type = "string", example = "User updated successfully")
             )
         ),
         @ApiResponse(responseCode = "400", description = "Erro de validação.",
@@ -84,6 +82,14 @@ public interface UserControllerDocs {
                 mediaType = "application/problem+json",
                 schema = @io.swagger.v3.oas.annotations.media.Schema(
                     example = "{ 'type': 'https://example.com/validation-error', 'title': 'Validation Error', 'status': 400, 'detail': 'Erro de validação nos campos enviados.', 'instance': '/api/v1/user/update/{id}', 'errors': { 'email': 'E-mail is mandatory.' } }"
+                )
+            )
+        ),
+        @ApiResponse(responseCode = "404", description = "Usuário não encontrado.",
+            content = @io.swagger.v3.oas.annotations.media.Content(
+                mediaType = "application/problem+json",
+                schema = @io.swagger.v3.oas.annotations.media.Schema(
+                    example = "{ 'type': 'https://example.com/not-found', 'title': 'User Not Found', 'status': 404, 'detail': 'User with id 1 not found', 'instance': '/api/v1/user/update/1' }"
                 )
             )
         )
@@ -99,9 +105,7 @@ public interface UserControllerDocs {
         @ApiResponse(responseCode = "200", description = "Usuário excluído com sucesso.",
             content = @io.swagger.v3.oas.annotations.media.Content(
                 mediaType = "application/json",
-                examples = @io.swagger.v3.oas.annotations.media.ExampleObject(
-                    value = "Usuário deletado com sucesso."
-                )
+                schema = @io.swagger.v3.oas.annotations.media.Schema(type = "string", example = "User deleted successfully")
             )
         ),
         @ApiResponse(responseCode = "404", description = "Usuário não encontrado.",
@@ -134,9 +138,7 @@ public interface UserControllerDocs {
         @ApiResponse(responseCode = "200", description = "Senha alterada com sucesso.",
             content = @io.swagger.v3.oas.annotations.media.Content(
                 mediaType = "application/json",
-                examples = @io.swagger.v3.oas.annotations.media.ExampleObject(
-                    value = "Password changed successfully."
-                )
+                schema = @io.swagger.v3.oas.annotations.media.Schema(type = "string", example = "Password changed successfully.")
             )
         ),
         @ApiResponse(responseCode = "400", description = "Erro de validação ou senha incorreta.",
@@ -144,6 +146,14 @@ public interface UserControllerDocs {
                 mediaType = "application/problem+json",
                 schema = @io.swagger.v3.oas.annotations.media.Schema(
                     example = "{ 'type': 'https://example.com/validation-error', 'title': 'Validation Error', 'status': 400, 'detail': 'Nova senha não pode ser nula ou composta apenas por espaços.', 'instance': '/api/v1/user/change-password/{id}' }"
+                )
+            )
+        ),
+        @ApiResponse(responseCode = "404", description = "Usuário não encontrado.",
+            content = @io.swagger.v3.oas.annotations.media.Content(
+                mediaType = "application/problem+json",
+                schema = @io.swagger.v3.oas.annotations.media.Schema(
+                    example = "{ 'type': 'https://example.com/not-found', 'title': 'User Not Found', 'status': 404, 'detail': 'User with id 1 not found', 'instance': '/api/v1/user/change-password/1' }"
                 )
             )
         )
@@ -168,9 +178,7 @@ public interface UserControllerDocs {
         @ApiResponse(responseCode = "200", description = "Login bem-sucedido.",
             content = @io.swagger.v3.oas.annotations.media.Content(
                 mediaType = "application/json",
-                examples = @io.swagger.v3.oas.annotations.media.ExampleObject(
-                    value = "Login successful"
-                )
+                schema = @io.swagger.v3.oas.annotations.media.Schema(type = "string", example = "Login successful")
             )
         ),
         @ApiResponse(responseCode = "401", description = "Credenciais inválidas.",
@@ -193,7 +201,10 @@ public interface UserControllerDocs {
         @ApiResponse(responseCode = "200", description = "Lista de usuários encontrada.",
             content = @io.swagger.v3.oas.annotations.media.Content(
                 mediaType = "application/json",
-                schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = UserResponseDTO.class)
+                array = @io.swagger.v3.oas.annotations.media.ArraySchema(schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = UserResponseDTO.class)),
+                examples = @io.swagger.v3.oas.annotations.media.ExampleObject(
+                    value = "[ { 'id': 1, 'name': 'João', 'email': 'joao@email.com', 'login': 'joao', 'userTypeId': { 'name': 'CLIENTE' }, 'address': 'Rua 1', 'lastUpdate': '2026-01-19T12:34:56.000Z' } ]"
+                )
             )
         )
     })
@@ -208,7 +219,10 @@ public interface UserControllerDocs {
         @ApiResponse(responseCode = "200", description = "Lista de usuários encontrada.",
             content = @io.swagger.v3.oas.annotations.media.Content(
                 mediaType = "application/json",
-                schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = UserResponseDTO.class)
+                array = @io.swagger.v3.oas.annotations.media.ArraySchema(schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = UserResponseDTO.class)),
+                examples = @io.swagger.v3.oas.annotations.media.ExampleObject(
+                    value = "[ { 'id': 1, 'name': 'João', 'email': 'joao@email.com', 'login': 'joao', 'userTypeId': { 'name': 'CLIENTE' }, 'address': 'Rua 1', 'lastUpdate': '2026-01-19T12:34:56.000Z' } ]"
+                )
             )
         ),
         @ApiResponse(responseCode = "404", description = "Nenhum usuário encontrado.",
