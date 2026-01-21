@@ -16,7 +16,6 @@ class PasswordServiceTest {
 
     @Mock
     private UserRepository userRepository;
-
     private PasswordService passwordService;
 
     @BeforeEach
@@ -28,7 +27,6 @@ class PasswordServiceTest {
     @Test
     void testIsPasswordValid_WhenPasswordMatches() {
         Long id = 1L;
-        String login = "testUser";
         String password = "password123";
         User user = new User();
         user.setPassword(password);
@@ -44,7 +42,6 @@ class PasswordServiceTest {
     @Test
     void testIsPasswordValid_WhenPasswordDoesNotMatch() {
         Long id = 1L;
-        String login = "testUser";
         String password = "wrongPassword";
         User user = new User();
         user.setPassword("password123");
@@ -60,10 +57,9 @@ class PasswordServiceTest {
     @Test
     void testIsPasswordValid_WhenUserNotFound() {
         Long id = 1L;
-        String login = "nonExistentUser";
         String password = "password123";
 
-        when(userRepository.findUserByLogin(login)).thenReturn(Optional.empty());
+        when(userRepository.findById(id)).thenReturn(Optional.empty());
 
         boolean isValid = passwordService.isPasswordValid(id, password);
 

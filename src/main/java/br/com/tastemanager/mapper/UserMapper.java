@@ -17,7 +17,7 @@ public interface UserMapper {
     @Mapping(target = "password", source = "password")
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "lastUpdate", ignore = true)
-    @Mapping(target = "typePerson", source = "typePerson")
+    @Mapping(target = "userTypeId", source = "userTypeId")
     @Mapping(target = "address", source = "address")
     User UserRequestDtoToEntity(UserRequestDTO dto);
 
@@ -25,15 +25,17 @@ public interface UserMapper {
     @Mapping(target = "name", source = "name")
     @Mapping(target = "email", source = "email")
     @Mapping(target = "lastUpdate", ignore = true)
-    @Mapping(target = "typePerson", source = "typePerson")
+    @Mapping(target = "userTypeId", source = "userTypeId")
     @Mapping(target = "address", source = "address")
     User userUpdateRequestDtoToEntity(UserUpdateRequestDTO dto);
 
+    @Mapping(target = "id", source = "id")
     @Mapping(target = "name", source = "name")
     @Mapping(target = "email", source = "email")
     @Mapping(target = "login", source = "login")
-    @Mapping(target = "typePerson", source = "typePerson")
+    @Mapping(target = "userTypeId", expression = "java(new br.com.tastemanager.dto.response.UserTypeIdResponseDTO(user.getUserTypeId().getName()))")
     @Mapping(target = "address", source = "address")
+    @Mapping(target = "lastUpdate", source = "lastUpdate")
     UserResponseDTO userToUserResponseDto(User user);
 
 }

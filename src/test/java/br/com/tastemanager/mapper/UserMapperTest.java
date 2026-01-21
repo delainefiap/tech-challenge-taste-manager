@@ -4,23 +4,29 @@ import br.com.tastemanager.dto.request.UserRequestDTO;
 import br.com.tastemanager.dto.request.UserUpdateRequestDTO;
 import br.com.tastemanager.dto.response.UserResponseDTO;
 import br.com.tastemanager.entity.User;
+import br.com.tastemanager.entity.UserType;
 import org.junit.jupiter.api.Test;
 import org.mapstruct.factory.Mappers;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
 class UserMapperTest {
 
     private final UserMapper userMapper = Mappers.getMapper(UserMapper.class);
 
+    @Test
     void shouldMapUserRequestDtoToEntity() {
         UserRequestDTO dto = new UserRequestDTO();
         dto.setName("John Doe");
         dto.setEmail("john.doe@example.com");
         dto.setLogin("johndoe");
         dto.setPassword("password123");
-        dto.setTypePerson("Individual");
+        UserType ut = new UserType();
+        ut.setId(1L);
+        ut.setName("Admin");
+        dto.setUserTypeId(ut);
         dto.setAddress("123 Main St");
 
         User user = userMapper.UserRequestDtoToEntity(dto);
@@ -30,7 +36,9 @@ class UserMapperTest {
         assertEquals("john.doe@example.com", user.getEmail());
         assertEquals("johndoe", user.getLogin());
         assertEquals("password123", user.getPassword());
-        assertEquals("Individual", user.getTypePerson());
+        assertNotNull(user.getUserTypeId());
+        assertEquals(1L, user.getUserTypeId().getId());
+        assertEquals("Admin", user.getUserTypeId().getName());
         assertEquals("123 Main St", user.getAddress());
     }
 
@@ -39,7 +47,6 @@ class UserMapperTest {
         UserUpdateRequestDTO dto = new UserUpdateRequestDTO();
         dto.setName("Jane Doe");
         dto.setEmail("jane.doe@example.com");
-        dto.setTypePerson("Individual");
         dto.setAddress("456 Elm St");
 
         User user = userMapper.userUpdateRequestDtoToEntity(dto);
@@ -47,7 +54,6 @@ class UserMapperTest {
         assertNull(user.getId());
         assertEquals("Jane Doe", user.getName());
         assertEquals("jane.doe@example.com", user.getEmail());
-        assertEquals("Individual", user.getTypePerson());
         assertEquals("456 Elm St", user.getAddress());
     }
 
@@ -57,15 +63,19 @@ class UserMapperTest {
         user.setName("John Doe");
         user.setEmail("john.doe@example.com");
         user.setLogin("johndoe");
-        user.setTypePerson("Individual");
         user.setAddress("123 Main St");
+        UserType ut2 = new UserType();
+        ut2.setId(2L);
+        ut2.setName("Customer");
+        user.setUserTypeId(ut2);
 
         UserResponseDTO dto = userMapper.userToUserResponseDto(user);
 
         assertEquals("John Doe", dto.getName());
         assertEquals("john.doe@example.com", dto.getEmail());
         assertEquals("johndoe", dto.getLogin());
-        assertEquals("Individual", dto.getTypePerson());
         assertEquals("123 Main St", dto.getAddress());
+        assertNotNull(dto.getUserTypeId());
+        assertEquals("Customer", dto.getUserTypeId().getName());
     }
 }

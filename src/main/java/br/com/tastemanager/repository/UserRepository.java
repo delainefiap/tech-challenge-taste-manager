@@ -1,29 +1,24 @@
 package br.com.tastemanager.repository;
 
 import br.com.tastemanager.entity.User;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 import java.util.Optional;
 
-public interface UserRepository {
+public interface UserRepository extends JpaRepository<User, Long> {
+    Optional<User> findByLogin(String login);
 
-    Integer save(User user);
-
-    Integer updateUser(Long id, User user);
-
-    Integer updatePassword(Long id, String password);
-
-    Integer deleteUser(Long id);
-
-    Optional<User> findById(Long id);
-
-    Optional<User> findUserByLogin(String login);
-
+    @Query("SELECT u.id FROM User u WHERE u.login = :login")
     Optional<Long> findIdByLogin(String login);
 
-    List<User> findAll(int size, int offset);
+    @Query("SELECT COUNT(u) FROM User u WHERE u.userTypeId.id = :id")
+    Long countByUserTypeId(Long id);
+    List<User> findByNameContainingIgnoreCase(String name);
 
-
-
+    @Query("SELECT u FROM User u WHERE REPLACE(LOWER(u.name), ' ', '') LIKE LOWER(CONCAT('%', REPLACE(:name, ' ', ''), '%'))")
+    List<User> findByNameIgnoreSpaces(@Param("name") String name);
 
 }

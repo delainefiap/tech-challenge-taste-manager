@@ -1,12 +1,38 @@
 version: '3.8'
 services:
+  mysql:
+    image: mysql:8.0
+    container_name: tastemanager-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: tastemanager
+      MYSQL_USER: tastemanager
+      MYSQL_PASSWORD: tastemanager
+    ports:
+      - "3306:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
   app:
-    image: openjdk:21
-    container_name: tastemanager-app
     build:
       context: .
       dockerfile: Dockerfile
+    image: tastemanager-app
+    container_name: tastemanager-app
     ports:
       - "8080:8080"
     environment:
       - TZ=America/Sao_Paulo
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/tastemanager?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+      - SPRING_DATASOURCE_USERNAME=tastemanager
+      - SPRING_DATASOURCE_PASSWORD=tastemanager
+    depends_on:
+      mysql:
+        condition: service_healthy
+volumes:
+  db_data:

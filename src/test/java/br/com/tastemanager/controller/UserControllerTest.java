@@ -1,6 +1,6 @@
 package br.com.tastemanager.controller;
 
-import br.com.tastemanager.dto.request.ChangePasswordRequest;
+import br.com.tastemanager.dto.request.ChangePasswordRequestDTO;
 import br.com.tastemanager.dto.request.UserRequestDTO;
 import br.com.tastemanager.dto.request.UserUpdateRequestDTO;
 import br.com.tastemanager.dto.response.UserResponseDTO;
@@ -40,6 +40,7 @@ class UserControllerTest {
         ResponseEntity<UserResponseDTO> response = userController.createUser(userRequest);
 
         assertEquals(201, response.getStatusCodeValue());
+        assertEquals(userResponse, response.getBody());
         verify(userService, times(1)).createUser(userRequest);
     }
 
@@ -47,7 +48,7 @@ class UserControllerTest {
     void testUpdateUser() {
         Long userId = 1L;
         UserUpdateRequestDTO userUpdateRequest = new UserUpdateRequestDTO();
-        String expectedResponse = "User updated successfully";
+        String expectedResponse = "User updated successfully.";
 
         when(userService.updateUser(userId, userUpdateRequest)).thenReturn(expectedResponse);
 
@@ -75,7 +76,7 @@ class UserControllerTest {
     @Test
     void testChangePassword() {
         Long userId = 1L;
-        ChangePasswordRequest changePasswordRequest = new ChangePasswordRequest();
+        ChangePasswordRequestDTO changePasswordRequest = new ChangePasswordRequestDTO();
 
         doNothing().when(userService).updatePassword(userId, changePasswordRequest);
 
@@ -87,7 +88,7 @@ class UserControllerTest {
     }
 
     @Test
-    void testValidateLogin() {
+    void testValidateLoginSuccess() {
         String login = "test";
         String password = "password";
 
@@ -101,11 +102,24 @@ class UserControllerTest {
     }
 
     @Test
-    void testFindAllUsers() {
-        int page = 0;
-        int size = 10;
-        List<User> users = List.of(new User(), new User());
+    void testValidateLoginFailure() {
+        String login = "test";
+        String password = "wrong";
 
+        when(userService.validateLogin(login, password)).thenReturn(false);
+
+        ResponseEntity<String> response = userController.validateLogin(login, password);
+
+        assertEquals(401, response.getStatusCodeValue());
+        assertEquals("Invalid credentials", response.getBody());
+        verify(userService, times(1)).validateLogin(login, password);
+    }
+
+    @Test
+    void testFindAllUsers() {
+        int page = 1;
+        int size = 10;
+        List<UserResponseDTO> users = List.of(new UserResponseDTO(), new UserResponseDTO());
         when(userService.findAllUsers(page, size)).thenReturn(users);
 
         ResponseEntity<?> response = userController.findAllUsers(page, size);
@@ -113,5 +127,18 @@ class UserControllerTest {
         assertEquals(200, response.getStatusCodeValue());
         assertEquals(users, response.getBody());
         verify(userService, times(1)).findAllUsers(page, size);
+    }
+
+    @Test
+    void testFindUsersByName() {
+        String name = "John";
+        List<UserResponseDTO> users = List.of(new UserResponseDTO());
+        when(userService.findUsersByName(name)).thenReturn(users);
+
+        ResponseEntity<List<UserResponseDTO>> response = userController.findUsersByName(name);
+
+        assertEquals(200, response.getStatusCodeValue());
+        assertEquals(users, response.getBody());
+        verify(userService, times(1)).findUsersByName(name);
     }
 }
