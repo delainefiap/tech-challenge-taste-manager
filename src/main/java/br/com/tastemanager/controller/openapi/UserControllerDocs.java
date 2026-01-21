@@ -29,7 +29,7 @@ public interface UserControllerDocs {
                 mediaType = "application/json",
                 schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = UserRequestDTO.class),
                 examples = @io.swagger.v3.oas.annotations.media.ExampleObject(
-                    value = "{ 'name': 'João', 'email': 'joao@email.com', 'login': 'joao', 'password': 'senha123', 'userTypeId': { 'id': 1 }, 'address': 'Rua 1' }"
+                    value = "{\n  \"name\": \"Ana Teste\",\n  \"email\": \"ana.teste@email.com\",\n  \"login\": \"anatestelogin\",\n  \"password\": \"senhaAna123\",\n  \"userTypeId\": { \"id\": 1 },\n  \"address\": \"Rua Nova, 100\"\n}"
                 )
             )
         )
@@ -65,7 +65,7 @@ public interface UserControllerDocs {
                 mediaType = "application/json",
                 schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = UserUpdateRequestDTO.class),
                 examples = @io.swagger.v3.oas.annotations.media.ExampleObject(
-                    value = "{ 'name': 'Maria', 'email': 'maria@email.com', 'userTypeId': { 'id': 1 }, 'address': 'Rua 2' }"
+                    value = "{\n  \"name\": \"Carlos Teste\",\n  \"email\": \"carlos.teste@email.com\",\n  \"userTypeId\": { \"id\": 2 },\n  \"address\": \"Rua Teste, 200\"\n}"
                 )
             )
         )
@@ -122,14 +122,14 @@ public interface UserControllerDocs {
 
     @Operation(
         summary = "Troca a senha do usuário.",
-        description = "Altera a senha de um usuário identificado pelo ID.",
+        description = "Troca a senha do usuário informado pelo id.",
         requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
             required = true,
             content = @io.swagger.v3.oas.annotations.media.Content(
                 mediaType = "application/json",
                 schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = ChangePasswordRequestDTO.class),
                 examples = @io.swagger.v3.oas.annotations.media.ExampleObject(
-                    value = "{ 'oldPassword': 'senha123', 'newPassword': 'novaSenha456' }"
+                    value = "{\n  \"oldPassword\": \"senha456\",\n  \"newPassword\": \"novaSenha456\"\n}"
                 )
             )
         )
@@ -164,34 +164,36 @@ public interface UserControllerDocs {
     @Operation(
         summary = "Valida o login do usuário.",
         description = "Valida as credenciais de login do usuário. Retorna sucesso ou falha.",
-        requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
-            required = true,
-            content = @io.swagger.v3.oas.annotations.media.Content(
-                mediaType = "application/json",
-                examples = @io.swagger.v3.oas.annotations.media.ExampleObject(
-                    value = "{ 'login': 'joao', 'password': 'senha123' }"
-                )
-            )
-        )
+        parameters = {
+            @io.swagger.v3.oas.annotations.Parameter(name = "login", description = "Login do usuário", required = true, example = "joaosilva"),
+            @io.swagger.v3.oas.annotations.Parameter(name = "password", description = "Senha do usuário", required = true, example = "senha123")
+        }
     )
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Login bem-sucedido.",
             content = @io.swagger.v3.oas.annotations.media.Content(
                 mediaType = "application/json",
-                schema = @io.swagger.v3.oas.annotations.media.Schema(type = "string", example = "Login successful")
+                schema = @io.swagger.v3.oas.annotations.media.Schema(type = "string"),
+                examples = @io.swagger.v3.oas.annotations.media.ExampleObject(
+                    value = "Login successful"
+                )
             )
         ),
         @ApiResponse(responseCode = "401", description = "Credenciais inválidas.",
             content = @io.swagger.v3.oas.annotations.media.Content(
-                mediaType = "application/problem+json",
-                schema = @io.swagger.v3.oas.annotations.media.Schema(
-                    example = "{ 'type': 'https://example.com/unauthorized', 'title': 'Unauthorized', 'status': 401, 'detail': 'Invalid credentials', 'instance': '/api/v1/user/validate-login' }"
+                mediaType = "application/json",
+                schema = @io.swagger.v3.oas.annotations.media.Schema(type = "string"),
+                examples = @io.swagger.v3.oas.annotations.media.ExampleObject(
+                    value = "Invalid credentials"
                 )
             )
         )
     })
     @PostMapping("/validate-login")
-    ResponseEntity<String> validateLogin(@RequestParam String login, @RequestParam String password);
+    ResponseEntity<String> validateLogin(
+        @RequestParam String login,
+        @RequestParam String password
+    );
 
     @Operation(
         summary = "Pesquisa todos os usuários cadastrados.",

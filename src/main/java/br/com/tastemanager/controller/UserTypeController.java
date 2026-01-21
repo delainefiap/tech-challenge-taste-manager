@@ -4,6 +4,7 @@ import br.com.tastemanager.controller.openapi.UserTypeControllerDocs;
 import br.com.tastemanager.dto.request.UserTypeRequestDTO;
 import br.com.tastemanager.dto.response.UserTypeResponseDTO;
 import br.com.tastemanager.service.UserTypeService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/user-type")
+@Tag(name = "2. User Type Controller", description = "Operações de tipo de usuário")
 public class UserTypeController implements UserTypeControllerDocs {
     private final UserTypeService userTypeService;
 

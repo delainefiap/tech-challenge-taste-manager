@@ -18,13 +18,14 @@ public interface UserTypeControllerDocs {
 
     @Operation(
             summary = "Cria um novo tipo de usuário.",
-            description = "Adiciona um novo tipo de usuário ao sistema e retorna os dados do tipo criado.",
+            description = "Endpoint para criar um novo tipo de usuário.",
             requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
                     required = true,
                     content = @io.swagger.v3.oas.annotations.media.Content(
                             mediaType = "application/json",
+                            schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = UserTypeRequestDTO.class),
                             examples = @io.swagger.v3.oas.annotations.media.ExampleObject(
-                                    value = "{ 'name': 'cliente' }"
+                                    value = "{\n  \"name\": \"CLIENTE\"\n}"
                             )
                     )
             )
@@ -51,14 +52,15 @@ public interface UserTypeControllerDocs {
     ResponseEntity<UserTypeResponseDTO> createUserType(@RequestBody UserTypeRequestDTO userTypeRequestDTO);
 
     @Operation(
-            summary = "Atualiza um tipo de usuário.",
-            description = "Atualiza as informações de um tipo de usuário existente pelo ID.",
+            summary = "Atualiza um tipo de usuário existente.",
+            description = "Endpoint para atualizar um tipo de usuário pelo ID.",
             requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
                     required = true,
                     content = @io.swagger.v3.oas.annotations.media.Content(
                             mediaType = "application/json",
+                            schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = UserTypeRequestDTO.class),
                             examples = @io.swagger.v3.oas.annotations.media.ExampleObject(
-                                    value = "{ 'name': 'dono_restaurante' }"
+                                    value = "{\n  \"name\": \"DONO_RESTAURANTE\"\n}"
                             )
                     )
             )
