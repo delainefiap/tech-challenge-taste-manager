@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 
 @RestController
-@RequestMapping("/user-type")
+@RequestMapping("/api/v1/user-type")
 @Tag(name = "2. User Type Controller", description = "Operações de tipo de usuário")
 public class UserTypeController implements UserTypeControllerDocs {
     private final UserTypeService userTypeService;

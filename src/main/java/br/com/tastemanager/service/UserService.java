@@ -4,7 +4,9 @@ import br.com.tastemanager.dto.request.ChangePasswordRequestDTO;
 import br.com.tastemanager.dto.request.UserRequestDTO;
 import br.com.tastemanager.dto.request.UserUpdateRequestDTO;
 import br.com.tastemanager.dto.response.UserResponseDTO;
+import br.com.tastemanager.dto.response.UserTypeIdResponseDTO;
 import br.com.tastemanager.entity.User;
+import br.com.tastemanager.entity.UserType;
 import br.com.tastemanager.exception.UserNotFoundException;
 import br.com.tastemanager.mapper.UserMapper;
 import br.com.tastemanager.repository.UserRepository;
@@ -31,7 +33,6 @@ public class UserService {
     private final UserMapper userMapper;
     private final PasswordService passwordService;
     private final UserValidator userValidation;
-
     private final UserTypeValidator userTypeValidator;
     private final UserTypeRepository userTypeRepository;
 
@@ -50,62 +51,74 @@ public class UserService {
 
         Long userTypeId = userRequest.getUserTypeId() != null ? userRequest.getUserTypeId().getId() : null;
         userTypeValidator.validateUserTypeId(userTypeId);
-        User user = userMapper.UserRequestDtoToEntity(userRequest);
-        user.setLastUpdate(Date.from(LocalDateTime.now().atZone(ZoneId.of("America/Sao_Paulo")).toInstant()));
-        userRepository.save(user);
-        logger.info("User created: {}", user.getLogin());
-        UserResponseDTO responseDTO = userMapper.userToUserResponseDto(user);
-        if (user.getUserTypeId() != null && user.getUserTypeId().getId() != null) {
-            userTypeRepository.findById(user.getUserTypeId().getId())
-                .ifPresent(userType -> responseDTO.setUserTypeId(new br.com.tastemanager.dto.response.UserTypeIdResponseDTO(userType.getName())));
-        }
-        return responseDTO;
 
+        User user = userMapper.UserRequestDtoToEntity(userRequest);
+        user.setCreatedAt(new Date());
+        user.setLastUpdate(user.getCreatedAt());
+        
+        // Fetch UserType entity to ensure it's managed
+        if (userTypeId != null) {
+            UserType userType = userTypeRepository.findById(userTypeId)
+                    .orElseThrow(() -> new IllegalArgumentException("UserType not found"));
+            user.setUserTypeId(userType);
+        }
+
+        user = userRepository.save(user);
+        logger.info("User created: {}", user.getLogin());
+        
+        return userMapper.userToUserResponseDto(user);
     }
 
     public String updateUser(Long id, UserUpdateRequestDTO userRequest) {
-        userValidation.validateUserExistsById(id);
-        if (userRequest.getName() != null) {
-            userValidation.validateUserName(userRequest.getName());
-        }
-        if (userRequest.getEmail() != null) {
-            userValidation.validateUserEmail(userRequest.getEmail());
-        }
-        User existingUser = userRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("User not found"));
-        if (userRequest.getEmail() != null && !userRequest.getEmail().equalsIgnoreCase(existingUser.getEmail())) {
-            userValidation.validateEmailAvailability(userRequest.getEmail());
-        }
+        User existingUser = userRepository.findById(id)
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
+
         if (userRequest.getName() != null) {
             existingUser.setName(userRequest.getName());
         }
-        if (userRequest.getEmail() != null) {
+        
+        if (userRequest.getEmail() != null && !userRequest.getEmail().equalsIgnoreCase(existingUser.getEmail())) {
+            userValidation.validateEmailAvailability(userRequest.getEmail());
             existingUser.setEmail(userRequest.getEmail());
         }
+        
         if (userRequest.getAddress() != null) {
             existingUser.setAddress(userRequest.getAddress());
         }
+        
         if (userRequest.getUserTypeId() != null) {
-            userTypeValidator.validateUserTypeId(userRequest.getUserTypeId().getId());
-            existingUser.setUserTypeId(userRequest.getUserTypeId());
+            Long typeId = userRequest.getUserTypeId().getId();
+            userTypeValidator.validateUserTypeId(typeId);
+            UserType userType = userTypeRepository.findById(typeId)
+                    .orElseThrow(() -> new IllegalArgumentException("UserType not found"));
+            existingUser.setUserTypeId(userType);
         }
-        existingUser.setLastUpdate(Date.from(LocalDateTime.now().atZone(ZoneId.of("America/Sao_Paulo")).toInstant()));
+
+        existingUser.setLastUpdate(new Date());
         userRepository.save(existingUser);
         logger.info("User updated: {}", existingUser.getLogin());
+        
         return "User updated successfully.";
     }
 
     public String deleteUser(Long id) {
-        userValidation.validateUserExistsById(id);
+        if (!userRepository.existsById(id)) {
+            throw new UserNotFoundException("User not found");
+        }
         userRepository.deleteById(id);
         return "User deleted successfully";
     }
 
     public void updatePassword(Long id, ChangePasswordRequestDTO changePasswordRequestDTO) {
-        userValidation.validateUserExistsById(id);
-        passwordService.validateOldPassword(passwordService.isPasswordValid(id, changePasswordRequestDTO.getOldPassword()));
-        User user = userRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("User not found"));
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
+        
+        if (!user.getPassword().equals(changePasswordRequestDTO.getOldPassword())) {
+             throw new IllegalArgumentException("Invalid old password");
+        }
+
         user.setPassword(changePasswordRequestDTO.getNewPassword());
-        user.setLastUpdate(Date.from(LocalDateTime.now().atZone(ZoneId.of("America/Sao_Paulo")).toInstant()));
+        user.setLastUpdate(new Date());
         userRepository.save(user);
     }
 
@@ -113,7 +126,6 @@ public class UserService {
         Optional<User> user = userRepository.findByLogin(login);
         return user.isPresent() && user.get().getPassword().equals(password);
     }
-
 
     public List<UserResponseDTO> findAllUsers(int page, int size) {
         Pageable pageable = PageRequest.of(page - 1, size);
@@ -129,6 +141,4 @@ public class UserService {
         }
         return users.stream().map(userMapper::userToUserResponseDto).toList();
     }
-
-
 }

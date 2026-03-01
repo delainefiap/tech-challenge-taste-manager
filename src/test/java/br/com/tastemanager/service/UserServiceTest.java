@@ -14,6 +14,7 @@ import org.mockito.*;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -82,9 +83,9 @@ class UserServiceTest {
         User user = new User();
         user.setEmail("old@example.com");
         when(userRepository.findById(userId)).thenReturn(java.util.Optional.of(user));
-        doNothing().when(userValidator).validateUserExistsById(userId);
-        doNothing().when(userValidator).validateUserName(request.getName());
-        doNothing().when(userValidator).validateUserEmail(request.getEmail());
+        //doNothing().when(userValidator).validateUserExistsById(userId);
+        //doNothing().when(userValidator).validateUserName(request.getName());
+        //doNothing().when(userValidator).validateUserEmail(request.getEmail());
         doNothing().when(userValidator).validateEmailAvailability(request.getEmail());
         when(userRepository.save(any(User.class))).thenReturn(user);
         String result = userService.updateUser(userId, request);
@@ -98,7 +99,7 @@ class UserServiceTest {
         UserUpdateRequestDTO request = new UserUpdateRequestDTO();
         request.setName(null);
         when(userRepository.findById(userId)).thenReturn(java.util.Optional.of(new User()));
-        doNothing().when(userValidator).validateUserExistsById(userId);
+        //doNothing().when(userValidator).validateUserExistsById(userId);
         assertDoesNotThrow(() -> userService.updateUser(userId, request));
     }
 
@@ -108,14 +109,15 @@ class UserServiceTest {
         UserUpdateRequestDTO request = new UserUpdateRequestDTO();
         request.setEmail(null);
         when(userRepository.findById(userId)).thenReturn(java.util.Optional.of(new User()));
-        doNothing().when(userValidator).validateUserExistsById(userId);
+        //doNothing().when(userValidator).validateUserExistsById(userId);
         assertDoesNotThrow(() -> userService.updateUser(userId, request));
     }
 
     @Test
     void deleteUser_ValidId_Success() {
         Long userId = 1L;
-        doNothing().when(userValidator).validateUserExistsById(userId);
+        //doNothing().when(userValidator).validateUserExistsById(userId);
+        when(userRepository.existsById(userId)).thenReturn(true);
         doNothing().when(userRepository).deleteById(userId);
         String result = userService.deleteUser(userId);
         assertEquals("User deleted successfully", result);
@@ -129,9 +131,10 @@ class UserServiceTest {
         request.setOldPassword("oldPass");
         request.setNewPassword("newPass");
         User user = new User();
+        user.setPassword("oldPass");
         when(userRepository.findById(userId)).thenReturn(java.util.Optional.of(user));
-        doNothing().when(userValidator).validateUserExistsById(userId);
-        when(passwordService.isPasswordValid(userId, request.getOldPassword())).thenReturn(true);
+        //doNothing().when(userValidator).validateUserExistsById(userId);
+        //when(passwordService.isPasswordValid(userId, request.getOldPassword())).thenReturn(true);
         when(userRepository.save(any(User.class))).thenReturn(user);
         userService.updatePassword(userId, request);
         verify(userRepository).save(any(User.class));
@@ -143,10 +146,12 @@ class UserServiceTest {
         ChangePasswordRequestDTO request = new ChangePasswordRequestDTO();
         request.setOldPassword("wrongPass");
         request.setNewPassword("newPass");
-        when(userRepository.findById(userId)).thenReturn(java.util.Optional.of(new User()));
-        doNothing().when(userValidator).validateUserExistsById(userId);
-        when(passwordService.isPasswordValid(userId, request.getOldPassword())).thenReturn(false);
-        doThrow(new IllegalArgumentException("Old password is incorrect")).when(passwordService).validateOldPassword(false);
+        User user = new User();
+        user.setPassword("correctPass");
+        when(userRepository.findById(userId)).thenReturn(java.util.Optional.of(user));
+        //doNothing().when(userValidator).validateUserExistsById(userId);
+        //when(passwordService.isPasswordValid(userId, request.getOldPassword())).thenReturn(false);
+        //doThrow(new IllegalArgumentException("Old password is incorrect")).when(passwordService).validateOldPassword(false);
         assertThrows(IllegalArgumentException.class, () -> userService.updatePassword(userId, request));
     }
 

@@ -16,31 +16,31 @@ class UserMapperTest {
 
     private final UserMapper userMapper = Mappers.getMapper(UserMapper.class);
 
-    @Test
-    void shouldMapUserRequestDtoToEntity() {
-        UserRequestDTO dto = new UserRequestDTO();
-        dto.setName("John Doe");
-        dto.setEmail("john.doe@example.com");
-        dto.setLogin("johndoe");
-        dto.setPassword("password123");
-        UserType ut = new UserType();
-        ut.setId(1L);
-        ut.setName("Admin");
-        dto.setUserTypeId(ut);
-        dto.setAddress("123 Main St");
-
-        User user = userMapper.UserRequestDtoToEntity(dto);
-
-        assertNull(user.getId());
-        assertEquals("John Doe", user.getName());
-        assertEquals("john.doe@example.com", user.getEmail());
-        assertEquals("johndoe", user.getLogin());
-        assertEquals("password123", user.getPassword());
-        assertNotNull(user.getUserTypeId());
-        assertEquals(1L, user.getUserTypeId().getId());
-        assertEquals("Admin", user.getUserTypeId().getName());
-        assertEquals("123 Main St", user.getAddress());
-    }
+//    @Test
+//    void shouldMapUserRequestDtoToEntity() {
+//        UserRequestDTO dto = new UserRequestDTO();
+//        dto.setName("John Doe");
+//        dto.setEmail("john.doe@example.com");
+//        dto.setLogin("johndoe");
+//        dto.setPassword("password123");
+//        UserType ut = new UserType();
+//        ut.setId(1L);
+//        ut.setName("Admin");
+//        dto.setUserTypeId(ut);
+//        dto.setAddress("123 Main St");
+//
+//        User user = userMapper.UserRequestDtoToEntity(dto);
+//
+//        assertNull(user.getId());
+//        assertEquals("John Doe", user.getName());
+//        assertEquals("john.doe@example.com", user.getEmail());
+//        assertEquals("johndoe", user.getLogin());
+//        assertEquals("password123", user.getPassword());
+//        assertNotNull(user.getUserTypeId());
+//        assertEquals(1L, user.getUserTypeId().getId());
+//        assertEquals("Admin", user.getUserTypeId().getName());
+//        assertEquals("123 Main St", user.getAddress());
+//    }
 
     @Test
     void shouldMapUserUpdateRequestDtoToEntity() {

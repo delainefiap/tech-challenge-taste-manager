@@ -1,9 +1,8 @@
 package br.com.tastemanager.dto.request;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Size;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 
 /**
  * DTO para requisições de criação e atualização de tipos de usuário.
@@ -20,7 +19,6 @@ public class UserTypeRequestDTO {
     @Size(max = 200, message = "Descrição deve ter no máximo 200 caracteres")
     private String description;
 
-    // Constructors
     public UserTypeRequestDTO() {}
 
     public UserTypeRequestDTO(String name, String description) {
@@ -28,7 +26,6 @@ public class UserTypeRequestDTO {
         this.description = description;
     }
 
-    // Getters and Setters
     public String getName() {
         return name;
     }

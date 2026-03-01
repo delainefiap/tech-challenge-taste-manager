@@ -61,7 +61,16 @@ public class GlobalExceptionHandler {
         ProblemDetail problem = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, ex.getMessage());
         problem.setTitle("User Type Not Found");
         problem.setType(URI.create("https://datatracker.ietf.org/doc/html/rfc7807#section-3.1"));
+        problem.setProperty("options", ex.getOptions());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(problem);
+    }
+
+    @ExceptionHandler(ItemMenuNotFoundException.class)
+    public ResponseEntity<ProblemDetail> handleItemMenuNotFoundException(ItemMenuNotFoundException ex) {
+        ProblemDetail problem = ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, ex.getMessage());
+        problem.setTitle("Item Menu Not Found");
+        problem.setType(URI.create("https://datatracker.ietf.org/doc/html/rfc7807#section-3.1"));
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(problem);
     }
 
 }

@@ -4,7 +4,6 @@ import br.com.tastemanager.dto.request.ChangePasswordRequestDTO;
 import br.com.tastemanager.dto.request.UserRequestDTO;
 import br.com.tastemanager.dto.request.UserUpdateRequestDTO;
 import br.com.tastemanager.dto.response.UserResponseDTO;
-import br.com.tastemanager.entity.User;
 import br.com.tastemanager.service.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -39,7 +38,7 @@ class UserControllerTest {
 
         ResponseEntity<UserResponseDTO> response = userController.createUser(userRequest);
 
-        assertEquals(201, response.getStatusCodeValue());
+        assertEquals(201, response.getStatusCode().value());
         assertEquals(userResponse, response.getBody());
         verify(userService, times(1)).createUser(userRequest);
     }
@@ -54,7 +53,7 @@ class UserControllerTest {
 
         ResponseEntity<String> response = userController.updateUser(userId, userUpdateRequest);
 
-        assertEquals(200, response.getStatusCodeValue());
+        assertEquals(200, response.getStatusCode().value());
         assertEquals(expectedResponse, response.getBody());
         verify(userService, times(1)).updateUser(userId, userUpdateRequest);
     }
@@ -68,7 +67,7 @@ class UserControllerTest {
 
         ResponseEntity<String> response = userController.deleteUser(userId);
 
-        assertEquals(200, response.getStatusCodeValue());
+        assertEquals(200, response.getStatusCode().value());
         assertEquals(expectedResponse, response.getBody());
         verify(userService, times(1)).deleteUser(userId);
     }
@@ -82,7 +81,7 @@ class UserControllerTest {
 
         ResponseEntity<String> response = userController.changePassword(userId, changePasswordRequest);
 
-        assertEquals(200, response.getStatusCodeValue());
+        assertEquals(200, response.getStatusCode().value());
         assertEquals("Password changed successfully.", response.getBody());
         verify(userService, times(1)).updatePassword(userId, changePasswordRequest);
     }
@@ -96,7 +95,7 @@ class UserControllerTest {
 
         ResponseEntity<String> response = userController.validateLogin(login, password);
 
-        assertEquals(200, response.getStatusCodeValue());
+        assertEquals(200, response.getStatusCode().value());
         assertEquals("Login successful", response.getBody());
         verify(userService, times(1)).validateLogin(login, password);
     }
@@ -110,7 +109,7 @@ class UserControllerTest {
 
         ResponseEntity<String> response = userController.validateLogin(login, password);
 
-        assertEquals(401, response.getStatusCodeValue());
+        assertEquals(401, response.getStatusCode().value());
         assertEquals("Invalid credentials", response.getBody());
         verify(userService, times(1)).validateLogin(login, password);
     }
@@ -124,7 +123,7 @@ class UserControllerTest {
 
         ResponseEntity<?> response = userController.findAllUsers(page, size);
 
-        assertEquals(200, response.getStatusCodeValue());
+        assertEquals(200, response.getStatusCode().value());
         assertEquals(users, response.getBody());
         verify(userService, times(1)).findAllUsers(page, size);
     }
@@ -137,7 +136,7 @@ class UserControllerTest {
 
         ResponseEntity<List<UserResponseDTO>> response = userController.findUsersByName(name);
 
-        assertEquals(200, response.getStatusCodeValue());
+        assertEquals(200, response.getStatusCode().value());
         assertEquals(users, response.getBody());
         verify(userService, times(1)).findUsersByName(name);
     }

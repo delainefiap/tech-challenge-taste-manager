@@ -81,6 +81,101 @@ TasteManager é uma aplicação desenvolvida em **Java 21** utilizando o framewo
     - Retorna erro se não houver correspondência.
 - **Resposta**: `200 OK` com lista de usuários.
 
+## Endpoints de Tipo de Usuário
+
+### 1. Criar Tipo de Usuário
+- **POST** `/api/v1/user-type/create`
+- **Descrição**: Cria um novo tipo de usuário.
+- **Regras**:
+    - `name` é obrigatório e único.
+- **Resposta**: `201 Created`
+
+### 2. Listar Tipos de Usuário
+- **GET** `/api/v1/user-type/find-all?page={page}&size={size}`
+- **Descrição**: Lista tipos de usuário com paginação.
+- **Resposta**: `200 OK`
+
+### 3. Buscar Tipo de Usuário por ID
+- **GET** `/api/v1/user-type/find/{id}`
+- **Descrição**: Busca um tipo de usuário específico.
+- **Resposta**: `200 OK` ou `404 Not Found`
+
+### 4. Atualizar Tipo de Usuário
+- **PATCH** `/api/v1/user-type/update/{id}`
+- **Descrição**: Atualiza um tipo de usuário existente.
+- **Resposta**: `200 OK` ou `404 Not Found`
+
+### 5. Deletar Tipo de Usuário
+- **DELETE** `/api/v1/user-type/delete?id={id}`
+- **Descrição**: Remove um tipo de usuário.
+- **Resposta**: `200 OK` ou `404 Not Found`
+
+## Endpoints de Restaurante
+
+### 1. Criar Restaurante
+- **POST** `/api/v1/restaurant/create`
+- **Descrição**: Cria um novo restaurante.
+- **Regras**:
+    - `name`, `address`, `typeKitchen`, `openingHours` e `ownerId` são obrigatórios.
+    - `ownerId` deve referenciar um usuário existente.
+- **Resposta**: `201 Created`
+
+### 2. Listar Restaurantes
+- **GET** `/api/v1/restaurant/find-all`
+- **Descrição**: Lista todos os restaurantes.
+- **Resposta**: `200 OK`
+
+### 3. Buscar Restaurante por ID
+- **GET** `/api/v1/restaurant/find/{id}`
+- **Descrição**: Busca um restaurante específico.
+- **Resposta**: `200 OK` ou `404 Not Found`
+
+### 4. Atualizar Restaurante
+- **PATCH** `/api/v1/restaurant/update/{id}`
+- **Descrição**: Atualiza um restaurante existente.
+- **Resposta**: `200 OK` ou `404 Not Found`
+
+### 5. Deletar Restaurante
+- **DELETE** `/api/v1/restaurant/delete?id={id}`
+- **Descrição**: Remove um restaurante.
+- **Resposta**: `200 OK` ou `404 Not Found`
+
+## Endpoints de Itens do Cardápio
+
+### 1. Criar Item do Cardápio
+- **POST** `/api/v1/restaurants/{restaurantId}/items`
+- **Descrição**: Adiciona um item ao cardápio de um restaurante.
+- **Regras**:
+    - `name`, `description` e `price` são obrigatórios.
+    - `price` deve ser positivo.
+    - `restaurantId` deve referenciar um restaurante existente.
+- **Resposta**: `201 Created`
+
+### 2. Listar Todos os Itens
+- **GET** `/api/v1/items/find-all?page={page}&size={size}`
+- **Descrição**: Lista todos os itens do cardápio com paginação.
+- **Resposta**: `200 OK`
+
+### 3. Listar Itens de um Restaurante
+- **GET** `/api/v1/restaurants/{restaurantId}/items`
+- **Descrição**: Lista os itens do cardápio de um restaurante específico.
+- **Resposta**: `200 OK` ou `404 Not Found`
+
+### 4. Buscar Item por ID
+- **GET** `/api/v1/items/{id}`
+- **Descrição**: Busca um item específico do cardápio.
+- **Resposta**: `200 OK` ou `404 Not Found`
+
+### 5. Atualizar Item do Cardápio
+- **PATCH** `/api/v1/items/{id}`
+- **Descrição**: Atualiza um item do cardápio.
+- **Resposta**: `200 OK` ou `404 Not Found`
+
+### 6. Deletar Item do Cardápio
+- **DELETE** `/api/v1/items/{id}`
+- **Descrição**: Remove um item do cardápio.
+- **Resposta**: `200 OK` ou `404 Not Found`
+
 ## Documentação Swagger/OpenAPI
 
 A documentação interativa dos endpoints está disponível em:
@@ -139,14 +234,53 @@ Para importar a coleção no Postman:
 | password      | VARCHAR(255) | NOT NULL                        | Senha do usuário                                         |
 | created_at    | TIMESTAMP    | NOT NULL, DEFAULT CURRENT_TIMESTAMP | Data de criação do registro                              |
 | last_update   | TIMESTAMP    | NULL, ON UPDATE CURRENT_TIMESTAMP   | Data da última modificação                               |
-| type_person   | VARCHAR(1)   | NULL                            | Tipo de usuário: '1' (cliente) ou '2' (dono_restaurante) |
+| user_type_id  | BIGINT       | FOREIGN KEY                     | Referência ao tipo de usuário                            |
 | address       | VARCHAR(500) | NULL                            | Endereço completo do usuário                             |
+
+### Tabela: `user_types`
+
+| Campo         | Tipo         | Constraints                     | Descrição                                                |
+|---------------|--------------|---------------------------------|----------------------------------------------------------|
+| id            | BIGINT       | PRIMARY KEY, AUTO_INCREMENT     | Identificador único do tipo de usuário                  |
+| name          | VARCHAR(50)  | NOT NULL, UNIQUE                | Nome do tipo de usuário                                  |
+| description   | VARCHAR(200) | NULL                            | Descrição opcional do tipo de usuário                   |
+
+### Tabela: `restaurant`
+
+| Campo         | Tipo         | Constraints                     | Descrição                                                |
+|---------------|--------------|---------------------------------|----------------------------------------------------------|
+| id            | BIGINT       | PRIMARY KEY, AUTO_INCREMENT     | Identificador único do restaurante                       |
+| name          | VARCHAR(255) | NOT NULL, UNIQUE                | Nome único do restaurante                                |
+| address       | VARCHAR(500) | NOT NULL                        | Endereço completo do restaurante                         |
+| type_kitchen  | VARCHAR(100) | NOT NULL                        | Tipo de cozinha (ex: Brasileira, Italiana)              |
+| opening_hours | VARCHAR(100) | NOT NULL                        | Horário de funcionamento                                 |
+| owner_id      | BIGINT       | FOREIGN KEY, NOT NULL           | Referência ao usuário dono do restaurante               |
+
+### Tabela: `menu`
+
+| Campo         | Tipo         | Constraints                     | Descrição                                                |
+|---------------|--------------|---------------------------------|----------------------------------------------------------|
+| menu_id       | BIGINT       | PRIMARY KEY                     | Identificador único do menu                              |
+| restaurant_id | BIGINT       | FOREIGN KEY, NOT NULL           | Referência ao restaurante                                |
+
+### Tabela: `item_menu`
+
+| Campo                        | Tipo         | Constraints                     | Descrição                                                |
+|------------------------------|--------------|----------------------------------|----------------------------------------------------------|
+| item_menu_id                 | BIGINT       | PRIMARY KEY, AUTO_INCREMENT     | Identificador único do item                              |
+| menu_id                      | BIGINT       | FOREIGN KEY, NOT NULL           | Referência ao menu                                       |
+| name                         | VARCHAR(100) | NOT NULL                        | Nome do item                                             |
+| description                  | VARCHAR(500) | NOT NULL                        | Descrição do item                                        |
+| price                        | DOUBLE       | NOT NULL                        | Preço do item                                            |
+| photo_path                   | VARCHAR(255) | NULL                            | Caminho para a foto do item                              |
+| available_only_at_restaurant | BOOLEAN      | DEFAULT FALSE                   | Se o item só pode ser consumido no restaurante          |
 
 **Observações**:
 - O campo `email` possui constraint de unicidade garantida pelo banco de dados.
 - O campo `login` possui constraint de unicidade e não pode ser atualizado após criação.
 - O campo `created_at` é definido automaticamente no momento da inserção.
 - O campo `last_update` é atualizado automaticamente em qualquer modificação do registro.
+- Relacionamentos: User -> UserType (ManyToOne), Restaurant -> User (ManyToOne), Menu -> Restaurant (ManyToOne), ItemMenu -> Menu (ManyToOne)
 
 ## Regras Gerais de Validação
 
