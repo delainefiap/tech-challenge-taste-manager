@@ -1,15 +1,28 @@
 # TasteManager
 
-TasteManager é uma aplicação desenvolvida em **Java 21** utilizando o framework **Spring Boot**. O objetivo do projeto é gerenciar usuários e suas informações, incluindo funcionalidades como criação, atualização, exclusão, troca de senha e validação de login.
+TasteManager é uma aplicação desenvolvida em **Java 21** utilizando o framework **Spring Boot** e **Clean Architecture**. O objetivo do projeto é gerenciar usuários, restaurantes e seus cardápios, incluindo funcionalidades como criação, atualização, exclusão e validação de dados.
+
+## 🏗️ Arquitetura
+
+Esta aplicação segue os princípios da **Clean Architecture**, organizando o código em camadas bem definidas:
+
+- **📁 domain/**: Entidades de negócio e interfaces dos repositórios
+- **📁 application/**: Serviços e casos de uso da aplicação
+- **📁 infrastructure/**: Controllers REST, configurações e implementações técnicas
+- **📁 shared/**: DTOs, mappers, validators e exceptions compartilhados
+
+Para mais detalhes sobre a arquitetura, consulte: [CLEAN_ARCHITECTURE.md](CLEAN_ARCHITECTURE.md)
 
 ## Tecnologias Utilizadas
 
 - **Java 21**
-- **Spring Boot**
+- **Spring Boot 3.2.5**
 - **Maven**
 - **MapStruct** (para mapeamento de DTOs)
-- **Docker** (recomendado, para containerização)
-- **Banco de Dados SQL** (MySQL via Docker Compose)
+- **Docker** & **Docker Compose**
+- **MySQL 8.0** (banco de dados)
+- **OpenAPI/Swagger** (documentação da API)
+- **Clean Architecture** (organização do código)
 
 ## Pré-requisitos
 
@@ -140,41 +153,53 @@ TasteManager é uma aplicação desenvolvida em **Java 21** utilizando o framewo
 - **Descrição**: Remove um restaurante.
 - **Resposta**: `200 OK` ou `404 Not Found`
 
-## Endpoints de Itens do Cardápio
+## Endpoints de Itens do Cardápio (MenuItem)
 
 ### 1. Criar Item do Cardápio
-- **POST** `/api/v1/restaurants/{restaurantId}/items`
+- **POST** `/api/v1/restaurants/{restaurantId}/menu-items`
 - **Descrição**: Adiciona um item ao cardápio de um restaurante.
 - **Regras**:
     - `name`, `description` e `price` são obrigatórios.
     - `price` deve ser positivo.
     - `restaurantId` deve referenciar um restaurante existente.
+    - `imagePath` é opcional (caminho da foto do prato).
+    - `availableOnlyAtRestaurant` indica se o item só pode ser consumido no local.
 - **Resposta**: `201 Created`
 
 ### 2. Listar Todos os Itens
-- **GET** `/api/v1/items/find-all?page={page}&size={size}`
+- **GET** `/api/v1/menu-items?page={page}&size={size}`
 - **Descrição**: Lista todos os itens do cardápio com paginação.
 - **Resposta**: `200 OK`
 
 ### 3. Listar Itens de um Restaurante
-- **GET** `/api/v1/restaurants/{restaurantId}/items`
+- **GET** `/api/v1/restaurants/{restaurantId}/menu-items`
 - **Descrição**: Lista os itens do cardápio de um restaurante específico.
 - **Resposta**: `200 OK` ou `404 Not Found`
 
 ### 4. Buscar Item por ID
-- **GET** `/api/v1/items/{id}`
+- **GET** `/api/v1/menu-items/{id}`
 - **Descrição**: Busca um item específico do cardápio.
 - **Resposta**: `200 OK` ou `404 Not Found`
 
 ### 5. Atualizar Item do Cardápio
-- **PATCH** `/api/v1/items/{id}`
+- **PATCH** `/api/v1/menu-items/{id}`
 - **Descrição**: Atualiza um item do cardápio.
 - **Resposta**: `200 OK` ou `404 Not Found`
 
 ### 6. Deletar Item do Cardápio
-- **DELETE** `/api/v1/items/{id}`
+- **DELETE** `/api/v1/menu-items/{id}`
 - **Descrição**: Remove um item do cardápio.
 - **Resposta**: `200 OK` ou `404 Not Found`
+
+### 7. Buscar Itens por Nome
+- **GET** `/api/v1/menu-items/search?name={name}`
+- **Descrição**: Busca itens do cardápio por nome (case-insensitive).
+- **Resposta**: `200 OK`
+
+### 8. Buscar Itens por Disponibilidade
+- **GET** `/api/v1/menu-items/availability?availableOnlyAtRestaurant={boolean}`
+- **Descrição**: Filtra itens por disponibilidade (só no restaurante ou para delivery).
+- **Resposta**: `200 OK`
 
 ## Documentação Swagger/OpenAPI
 
@@ -256,14 +281,26 @@ Para importar a coleção no Postman:
 | opening_hours | VARCHAR(100) | NOT NULL                        | Horário de funcionamento                                 |
 | owner_id      | BIGINT       | FOREIGN KEY, NOT NULL           | Referência ao usuário dono do restaurante               |
 
-### Tabela: `menu`
+### Tabela: `menu_items` ✨ (Nova Estrutura Simplificada)
+
+| Campo                        | Tipo         | Constraints                     | Descrição                                                |
+|------------------------------|--------------|----------------------------------|----------------------------------------------------------|
+| id                           | BIGINT       | PRIMARY KEY, AUTO_INCREMENT     | Identificador único do item                              |
+| restaurant_id                | BIGINT       | FOREIGN KEY, NOT NULL           | Referência direta ao restaurante                        |
+| name                         | VARCHAR(255) | NOT NULL                        | Nome do item                                             |
+| description                  | VARCHAR(500) | NOT NULL                        | Descrição do item                                        |
+| price                        | DOUBLE       | NOT NULL                        | Preço do item                                            |
+| image_path                   | VARCHAR(255) | NULL                            | Caminho para a foto do item                              |
+| available_only_at_restaurant | BOOLEAN      | NOT NULL, DEFAULT FALSE         | Se o item só pode ser consumido no restaurante          |
+
+### Tabela: `menu` (Legacy - será removida)
 
 | Campo         | Tipo         | Constraints                     | Descrição                                                |
 |---------------|--------------|---------------------------------|----------------------------------------------------------|
 | menu_id       | BIGINT       | PRIMARY KEY                     | Identificador único do menu                              |
 | restaurant_id | BIGINT       | FOREIGN KEY, NOT NULL           | Referência ao restaurante                                |
 
-### Tabela: `item_menu`
+### Tabela: `item_menu` (Legacy - será removida)
 
 | Campo                        | Tipo         | Constraints                     | Descrição                                                |
 |------------------------------|--------------|----------------------------------|----------------------------------------------------------|
@@ -280,7 +317,8 @@ Para importar a coleção no Postman:
 - O campo `login` possui constraint de unicidade e não pode ser atualizado após criação.
 - O campo `created_at` é definido automaticamente no momento da inserção.
 - O campo `last_update` é atualizado automaticamente em qualquer modificação do registro.
-- Relacionamentos: User -> UserType (ManyToOne), Restaurant -> User (ManyToOne), Menu -> Restaurant (ManyToOne), ItemMenu -> Menu (ManyToOne)
+- **Nova estrutura**: MenuItem -> Restaurant (ManyToOne) - Relacionamento direto simplificado
+- **Legacy**: User -> UserType (ManyToOne), Restaurant -> User (ManyToOne), Menu -> Restaurant (ManyToOne), ItemMenu -> Menu (ManyToOne)
 
 ## Regras Gerais de Validação
 
