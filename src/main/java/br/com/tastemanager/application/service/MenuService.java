@@ -112,7 +112,7 @@ public class MenuService {
         menuValidator.validateMenuItemExists(id);
 
         Menu menu = menuRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Item do cardápio não encontrado"));
+                .orElseThrow(() -> new IllegalArgumentException("Item do cardápio com ID " + id + " não encontrado"));
 
         return menuMapper.toResponseDTO(menu);
     }
@@ -123,6 +123,10 @@ public class MenuService {
 
         menuValidator.validateRestaurant(restaurantId);
         Menu menu = menuValidator.validateMenuItemExists(restaurantId, itemId);
+
+        if (requestDTO.getRestaurantItemNumber() != null && !requestDTO.getRestaurantItemNumber().equals(menu.getRestaurantItemNumber())) {
+            throw new IllegalArgumentException("O restaurantItemNumber não pode ser alterado.");
+        }
 
         if (requestDTO.getName() != null && !requestDTO.getName().equals(menu.getName())) {
             menuValidator.validateMenuItemNameForUpdate(requestDTO.getName(),
@@ -151,6 +155,37 @@ public class MenuService {
 
         logger.info("Item do cardápio excluído com sucesso. ID: {}", menu.getId());
         return "Item do cardápio excluído com sucesso";
+    }
+
+    @Transactional
+    public String deleteMenuItemByRestaurantItemNumber(Long restaurantId, Long restaurantItemNumber) {
+        logger.info("Excluindo item do cardápio {} do restaurante ID: {}", restaurantItemNumber, restaurantId);
+
+        menuValidator.validateRestaurant(restaurantId);
+        Menu menu = menuRepository.findByRestaurantIdAndRestaurantItemNumber(restaurantId, restaurantItemNumber)
+            .orElseThrow(() -> new IllegalArgumentException("Item do cardápio com número " + restaurantItemNumber + " não encontrado para o restaurante com ID " + restaurantId));
+
+        menuRepository.delete(menu);
+
+        logger.info("Item do cardápio excluído com sucesso. ID: {}", menu.getId());
+        return "Item do cardápio excluído com sucesso";
+    }
+
+    @Transactional
+    public String deleteAllMenuItemsByRestaurant(Long restaurantId) {
+        logger.info("Excluindo todos os itens do cardápio do restaurante ID: {}", restaurantId);
+
+        menuValidator.validateRestaurant(restaurantId);
+        List<Menu> menus = menuRepository.findByRestaurantIdOrderByRestaurantItemNumberAsc(restaurantId);
+
+        if (menus.isEmpty()) {
+            throw new IllegalArgumentException("Nenhum item do cardápio encontrado para o restaurante com ID " + restaurantId);
+        }
+
+        menuRepository.deleteAll(menus);
+
+        logger.info("Todos os itens do cardápio do restaurante ID: {} foram excluídos com sucesso", restaurantId);
+        return "Todos os itens do cardápio do restaurante foram excluídos com sucesso";
     }
 
     public List<MenuResponseDTO> findMenuItemsByName(String name) {

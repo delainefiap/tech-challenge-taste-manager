@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.List;
+
 public interface UserTypeControllerDocs {
 
     @Operation(
@@ -43,7 +45,7 @@ public interface UserTypeControllerDocs {
                     content = @io.swagger.v3.oas.annotations.media.Content(
                             mediaType = "application/problem+json",
                             examples = @io.swagger.v3.oas.annotations.media.ExampleObject(
-                                    value = "{ 'type': 'https://example.com/validation-error', 'title': 'Validation Error', 'status': 400, 'detail': 'Nome já existe ou inválido.', 'instance': '/api/v1/usertype/create' }"
+                                    value = "{ 'type': 'https://example.com/validation-error', 'title': 'Validation Error', 'status': 400, 'detail': 'Nome já existe ou inválido.', 'instance': '/api/v1/user-type/create' }"
                             )
                     )
             )
@@ -78,7 +80,7 @@ public interface UserTypeControllerDocs {
                     content = @io.swagger.v3.oas.annotations.media.Content(
                             mediaType = "application/problem+json",
                             examples = @io.swagger.v3.oas.annotations.media.ExampleObject(
-                                    value = "{ 'type': 'https://example.com/not-found', 'title': 'UserType Not Found', 'status': 404, 'detail': 'Tipo de usuário não encontrado.', 'instance': '/api/v1/usertype/update/{id}' }"
+                                    value = "{ 'type': 'https://example.com/not-found', 'title': 'UserType Not Found', 'status': 404, 'detail': 'Tipo de usuário não encontrado.', 'instance': '/api/v1/user-type/update/{id}' }"
                             )
                     )
             )
@@ -103,7 +105,7 @@ public interface UserTypeControllerDocs {
                     content = @io.swagger.v3.oas.annotations.media.Content(
                             mediaType = "application/problem+json",
                             examples = @io.swagger.v3.oas.annotations.media.ExampleObject(
-                                    value = "{ 'type': 'https://example.com/not-found', 'title': 'UserType Not Found', 'status': 404, 'detail': 'Tipo de usuário não encontrado.', 'instance': '/api/v1/usertype/delete' }"
+                                    value = "{ 'type': 'https://example.com/not-found', 'title': 'UserType Not Found', 'status': 404, 'detail': 'Tipo de usuário não encontrado.', 'instance': '/api/v1/user-type/delete' }"
                             )
                     )
             )
@@ -126,7 +128,7 @@ public interface UserTypeControllerDocs {
             )
     })
     @GetMapping("/find-all")
-    ResponseEntity<?> findAllUserTypes(@RequestParam int page, @RequestParam int size);
+    ResponseEntity<List<UserTypeResponseDTO>> findAllUserTypes(@RequestParam int page, @RequestParam int size);
 
     @Operation(
             summary = "Busca tipo de usuário por ID.",
@@ -145,11 +147,11 @@ public interface UserTypeControllerDocs {
                     content = @io.swagger.v3.oas.annotations.media.Content(
                             mediaType = "application/problem+json",
                             examples = @io.swagger.v3.oas.annotations.media.ExampleObject(
-                                    value = "{ 'type': 'https://example.com/not-found', 'title': 'UserType Not Found', 'status': 404, 'detail': 'Tipo de usuário não encontrado.', 'instance': '/api/v1/usertype/find/{id}' }"
+                                    value = "{ 'type': 'https://example.com/not-found', 'title': 'UserType Not Found', 'status': 404, 'detail': 'Tipo de usuário não encontrado.', 'instance': '/api/v1/user-type/find-by-id' }"
                             )
                     )
             )
     })
-    @GetMapping("/find/{id}")
-    ResponseEntity<UserTypeResponseDTO> findUserTypeById(@PathVariable Long id);
+    @GetMapping("/find-by-id")
+    ResponseEntity<UserTypeResponseDTO> findUserTypeById(@RequestParam Long id);
 }

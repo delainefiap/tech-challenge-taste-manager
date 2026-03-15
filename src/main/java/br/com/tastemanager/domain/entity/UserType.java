@@ -27,4 +27,8 @@ public class UserType implements Serializable {
 
     @Column(nullable = false, unique = true)
     private String name;
+
+    @Column(nullable = true, unique = false)
+    private String description;
+
 }

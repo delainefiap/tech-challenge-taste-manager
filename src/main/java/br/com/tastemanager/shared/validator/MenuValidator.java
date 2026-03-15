@@ -91,4 +91,15 @@ public class MenuValidator {
             throw new IllegalArgumentException("Item não pertence ao restaurante especificado");
         }
     }
+
+    public void validateRestaurantItemNumber(Long restaurantId, Integer restaurantItemNumber, Long currentItemId) {
+        if (restaurantItemNumber != null) {
+            menuRepository.findByRestaurantIdAndRestaurantItemNumber(restaurantId, restaurantItemNumber.longValue())
+                .ifPresent(item -> {
+                    if (!item.getId().equals(currentItemId)) {
+                        throw new IllegalArgumentException("O número do item do restaurante " + restaurantItemNumber + " já está em uso.");
+                    }
+                });
+        }
+    }
 }

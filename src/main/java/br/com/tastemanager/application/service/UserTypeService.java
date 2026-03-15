@@ -8,9 +8,11 @@ import br.com.tastemanager.shared.mapper.UserTypeMapper;
 import br.com.tastemanager.shared.validator.UserTypeValidator;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class UserTypeService {
@@ -26,21 +28,26 @@ public class UserTypeService {
     }
 
     public UserTypeResponseDTO createUserType(UserTypeRequestDTO userTypeRequestDTO) {
-        userTypeValidator.validateUserTypeName(userTypeRequestDTO.getName());
+        String upperCaseName = userTypeRequestDTO.getName().toUpperCase();
+        userTypeValidator.validateUserTypeName(upperCaseName);
         UserType userType = userTypeMapper.toEntity(userTypeRequestDTO);
+        userType.setName(upperCaseName);
         userTypeRepository.save(userType);
         return userTypeMapper.toResponseDTO(userType);
     }
 
-    public List<UserType> findAllUserTypes(int page, int size) {
-        Pageable pageable = PageRequest.of(page - 1, size);
-        return userTypeRepository.findAll(pageable).getContent();
+    public List<UserTypeResponseDTO> findAllUserTypes(int page, int size) {
+        Pageable pageable = PageRequest.of(page - 1, size, Sort.by("id"));
+        return userTypeRepository.findAll(pageable).getContent().stream()
+                .map(userTypeMapper::toResponseDTO)
+                .collect(Collectors.toList());
     }
 
     public UserTypeResponseDTO updateUserType(Long id, UserTypeRequestDTO userTypeRequestDTO) {
         UserType userType = userTypeRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("UserType not found"));
-        userType.setName(userTypeRequestDTO.getName());
+        String upperCaseName = userTypeRequestDTO.getName().toUpperCase();
+        userType.setName(upperCaseName);
         userTypeRepository.save(userType);
         return userTypeMapper.toResponseDTO(userType);
     }

@@ -1,6 +1,6 @@
 -- user_types
-INSERT INTO user_types (name) VALUES ('CLIENTE');
-INSERT INTO user_types (name) VALUES ('DONO_RESTAURANTE');
+INSERT INTO user_types (name, description) VALUES ('CLIENTE', 'Usuário que pode consultar restaurantes, fazer pedidos e deixar avaliações');
+INSERT INTO user_types (name, description) VALUES ('DONO_RESTAURANTE', 'Usuário responsável pela gestão de um ou mais restaurantes');
 
 -- users
 INSERT INTO users (name, email, login, password, created_at, last_update, user_type_id, address) VALUES ('João Silva', 'joao.silva@email.com', 'joaosilva', 'senha123', NOW(), NOW(), 1, 'Rua A, 123');

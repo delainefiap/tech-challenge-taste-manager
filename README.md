@@ -109,7 +109,7 @@ Para mais detalhes sobre a arquitetura, consulte: [CLEAN_ARCHITECTURE.md](CLEAN_
 - **Resposta**: `200 OK`
 
 ### 3. Buscar Tipo de Usuário por ID
-- **GET** `/api/v1/user-type/find/{id}`
+- **GET** `/api/v1/user-type/find-by-id?id={id}`
 - **Descrição**: Busca um tipo de usuário específico.
 - **Resposta**: `200 OK` ou `404 Not Found`
 
@@ -139,7 +139,7 @@ Para mais detalhes sobre a arquitetura, consulte: [CLEAN_ARCHITECTURE.md](CLEAN_
 - **Resposta**: `200 OK`
 
 ### 3. Buscar Restaurante por ID
-- **GET** `/api/v1/restaurant/find/{id}`
+- **GET** `/api/v1/restaurant/find-by-id?id={id}`
 - **Descrição**: Busca um restaurante específico.
 - **Resposta**: `200 OK` ou `404 Not Found`
 
@@ -156,8 +156,8 @@ Para mais detalhes sobre a arquitetura, consulte: [CLEAN_ARCHITECTURE.md](CLEAN_
 ## Endpoints de Itens do Cardápio (MenuItem)
 
 ### 1. Criar Item do Cardápio
-- **POST** `/api/v1/restaurants/{restaurantId}/menu-items`
-- **Descrição**: Adiciona um item ao cardápio de um restaurante.
+- **POST** `/api/v1/menu/create/{restaurantId}`
+- **Descrição**: Cria uma lista de itens do cardápio para o restaurante informado.
 - **Regras**:
     - `name`, `description` e `price` são obrigatórios.
     - `price` deve ser positivo.
@@ -167,39 +167,34 @@ Para mais detalhes sobre a arquitetura, consulte: [CLEAN_ARCHITECTURE.md](CLEAN_
 - **Resposta**: `201 Created`
 
 ### 2. Listar Todos os Itens
-- **GET** `/api/v1/menu-items?page={page}&size={size}`
+- **GET** `/api/v1/menu/find-all?page={page}&size={size}`
 - **Descrição**: Lista todos os itens do cardápio com paginação.
 - **Resposta**: `200 OK`
 
 ### 3. Listar Itens de um Restaurante
-- **GET** `/api/v1/restaurants/{restaurantId}/menu-items`
+- **GET** `/api/v1/menu/find-by-restaurant?id={restaurantId}`
 - **Descrição**: Lista os itens do cardápio de um restaurante específico.
 - **Resposta**: `200 OK` ou `404 Not Found`
 
 ### 4. Buscar Item por ID
-- **GET** `/api/v1/menu-items/{id}`
+- **GET** `/api/v1/menu/find-by-id/{id}`
 - **Descrição**: Busca um item específico do cardápio.
 - **Resposta**: `200 OK` ou `404 Not Found`
 
 ### 5. Atualizar Item do Cardápio
-- **PATCH** `/api/v1/menu-items/{id}`
+- **PUT** `/api/v1/menu/update?restaurantId={restaurantId}&itemId={itemId}`
 - **Descrição**: Atualiza um item do cardápio.
 - **Resposta**: `200 OK` ou `404 Not Found`
 
 ### 6. Deletar Item do Cardápio
-- **DELETE** `/api/v1/menu-items/{id}`
-- **Descrição**: Remove um item do cardápio.
+- **DELETE** `/api/v1/menu/delete-item?restaurantId={restaurantId}&restaurantItemNumber={restaurantItemNumber}`
+- **Descrição**: Remove um item do cardápio associado a um restaurante.
 - **Resposta**: `200 OK` ou `404 Not Found`
 
-### 7. Buscar Itens por Nome
-- **GET** `/api/v1/menu-items/search?name={name}`
-- **Descrição**: Busca itens do cardápio por nome (case-insensitive).
-- **Resposta**: `200 OK`
-
-### 8. Buscar Itens por Disponibilidade
-- **GET** `/api/v1/menu-items/availability?availableOnlyAtRestaurant={boolean}`
-- **Descrição**: Filtra itens por disponibilidade (só no restaurante ou para delivery).
-- **Resposta**: `200 OK`
+### 7. Deletar Todos os Itens de um Restaurante
+- **DELETE** `/api/v1/menu/delete-all/{restaurantId}`
+- **Descrição**: Remove todos os itens do cardápio de um restaurante.
+- **Resposta**: `200 OK` ou `404 Not Found`
 
 ## Documentação Swagger/OpenAPI
 
@@ -248,77 +243,65 @@ Para importar a coleção no Postman:
 
 ## Estrutura do Banco de Dados
 
+Abaixo está a estrutura das principais tabelas conforme as entidades do código (source of truth).
+
 ### Tabela: `users`
 
-| Campo         | Tipo         | Constraints                     | Descrição                                                |
-|---------------|--------------|---------------------------------|----------------------------------------------------------|
-| id            | BIGINT       | PRIMARY KEY, AUTO_INCREMENT     | Identificador único do usuário                           |
-| name          | VARCHAR(255) | NOT NULL                        | Nome completo do usuário                                 |
-| email         | VARCHAR(255) | NOT NULL, UNIQUE                | E-mail único do usuário                                  |
-| login         | VARCHAR(100) | NOT NULL, UNIQUE                | Login único (não pode ser alterado)                      |
-| password      | VARCHAR(255) | NOT NULL                        | Senha do usuário                                         |
-| created_at    | TIMESTAMP    | NOT NULL, DEFAULT CURRENT_TIMESTAMP | Data de criação do registro                              |
-| last_update   | TIMESTAMP    | NULL, ON UPDATE CURRENT_TIMESTAMP   | Data da última modificação                               |
-| user_type_id  | BIGINT       | FOREIGN KEY                     | Referência ao tipo de usuário                            |
-| address       | VARCHAR(500) | NULL                            | Endereço completo do usuário                             |
+| Campo         | Tipo         | Constraints                                    | Descrição                                                |
+|---------------|--------------|------------------------------------------------|----------------------------------------------------------|
+| id            | BIGINT       | PRIMARY KEY, AUTO_INCREMENT                    | Identificador único do usuário                           |
+| name          | VARCHAR(255) | (sem restrição de coluna no DB)                | Nome completo do usuário (validação aplicada na aplicação)
+| email         | VARCHAR(255) | NOT NULL, UNIQUE                               | E-mail único do usuário                                  |
+| login         | VARCHAR(255) | NOT NULL, UNIQUE, updatable = false            | Login único (definido na criação; não pode ser alterado) |
+| password      | VARCHAR(255) | (sem restrição de coluna no DB)                | Senha do usuário (validação aplicada na aplicação)      |
+| created_at    | TIMESTAMP    | NOT NULL                                       | Data de criação (preenchida automaticamente pela aplicação)
+| last_update   | TIMESTAMP    | NULL                                           | Data da última modificação (atualizada automaticamente)
+| user_type_id  | BIGINT       | NOT NULL, FOREIGN KEY -> user_types(id)        | Referência ao tipo de usuário                            |
+| address       | VARCHAR(500) | NULL                                           | Endereço completo do usuário                             |
+
+Observações:
+- A entidade `User` define um índice `idx_user_type` sobre a coluna `user_type_id`.
+- Algumas regras (por exemplo, obrigatoriedade de `name` ou `password`) são aplicadas pela camada de validação da aplicação e podem não estar refletidas como constraints de coluna no banco de dados.
 
 ### Tabela: `user_types`
 
 | Campo         | Tipo         | Constraints                     | Descrição                                                |
 |---------------|--------------|---------------------------------|----------------------------------------------------------|
-| id            | BIGINT       | PRIMARY KEY, AUTO_INCREMENT     | Identificador único do tipo de usuário                  |
-| name          | VARCHAR(50)  | NOT NULL, UNIQUE                | Nome do tipo de usuário                                  |
-| description   | VARCHAR(200) | NULL                            | Descrição opcional do tipo de usuário                   |
+| id            | BIGINT       | PRIMARY KEY, AUTO_INCREMENT     | Identificador único do tipo de usuário                   |
+| name          | VARCHAR(255) | NOT NULL, UNIQUE                | Nome do tipo de usuário (ex.: CLIENTE, DONO_RESTAURANTE) |
+| description   | VARCHAR(255) | NULL                            | Descrição opcional do tipo de usuário                   |
 
-### Tabela: `restaurant`
+### Tabela: `restaurants`
 
 | Campo         | Tipo         | Constraints                     | Descrição                                                |
 |---------------|--------------|---------------------------------|----------------------------------------------------------|
 | id            | BIGINT       | PRIMARY KEY, AUTO_INCREMENT     | Identificador único do restaurante                       |
-| name          | VARCHAR(255) | NOT NULL, UNIQUE                | Nome único do restaurante                                |
+| name          | VARCHAR(255) | NOT NULL, UNIQUE                | Nome único do restaurante                                 |
 | address       | VARCHAR(500) | NOT NULL                        | Endereço completo do restaurante                         |
-| type_kitchen  | VARCHAR(100) | NOT NULL                        | Tipo de cozinha (ex: Brasileira, Italiana)              |
+| type_kitchen  | VARCHAR(255) | NOT NULL                        | Tipo de cozinha (ex: Brasileira, Italiana)              |
 | opening_hours | VARCHAR(100) | NOT NULL                        | Horário de funcionamento                                 |
-| owner_id      | BIGINT       | FOREIGN KEY, NOT NULL           | Referência ao usuário dono do restaurante               |
+| owner_id      | BIGINT       | NOT NULL, FOREIGN KEY -> users(id) | Referência ao usuário dono do restaurante               |
 
-### Tabela: `menu_items` ✨ (Nova Estrutura Simplificada)
+### Tabela: `menu`
+
+> Observação: a entidade que representa itens do cardápio é `Menu` (tabela `menu`).
 
 | Campo                        | Tipo         | Constraints                     | Descrição                                                |
-|------------------------------|--------------|----------------------------------|----------------------------------------------------------|
+|------------------------------|--------------|---------------------------------|----------------------------------------------------------|
 | id                           | BIGINT       | PRIMARY KEY, AUTO_INCREMENT     | Identificador único do item                              |
-| restaurant_id                | BIGINT       | FOREIGN KEY, NOT NULL           | Referência direta ao restaurante                        |
+| restaurant_id                | BIGINT       | NOT NULL, FOREIGN KEY -> restaurants(id) | Referência ao restaurante                         |
+| restaurant_item_number       | BIGINT       | NOT NULL                        | Número do item no cardápio do restaurante (identificador local)
 | name                         | VARCHAR(255) | NOT NULL                        | Nome do item                                             |
 | description                  | VARCHAR(500) | NOT NULL                        | Descrição do item                                        |
 | price                        | DOUBLE       | NOT NULL                        | Preço do item                                            |
 | image_path                   | VARCHAR(255) | NULL                            | Caminho para a foto do item                              |
-| available_only_at_restaurant | BOOLEAN      | NOT NULL, DEFAULT FALSE         | Se o item só pode ser consumido no restaurante          |
+| available_only_at_restaurant | BOOLEAN      | NOT NULL, DEFAULT FALSE         | Se o item só pode ser consumido no restaurante           |
 
-### Tabela: `menu` (Legacy - será removida)
+### Observações gerais
+- Os nomes das tabelas e colunas acima foram alinhados com as anotações JPA presentes nas entidades em `src/main/java/br/com/tastemanager/domain/entity`.
+- Regras adicionais de negócio e validações (por exemplo: obrigatoriedade, formatos, valores mínimos) são aplicadas na camada de validação da aplicação e nas DTOs; algumas dessas restrições podem não aparecer como constraints diretas no esquema do banco.
+- Se desejar, posso gerar um diagrama simples (MER) com essas quatro tabelas e suas FK ou criar scripts SQL DDL aproximados para referência.
 
-| Campo         | Tipo         | Constraints                     | Descrição                                                |
-|---------------|--------------|---------------------------------|----------------------------------------------------------|
-| menu_id       | BIGINT       | PRIMARY KEY                     | Identificador único do menu                              |
-| restaurant_id | BIGINT       | FOREIGN KEY, NOT NULL           | Referência ao restaurante                                |
-
-### Tabela: `item_menu` (Legacy - será removida)
-
-| Campo                        | Tipo         | Constraints                     | Descrição                                                |
-|------------------------------|--------------|----------------------------------|----------------------------------------------------------|
-| item_menu_id                 | BIGINT       | PRIMARY KEY, AUTO_INCREMENT     | Identificador único do item                              |
-| menu_id                      | BIGINT       | FOREIGN KEY, NOT NULL           | Referência ao menu                                       |
-| name                         | VARCHAR(100) | NOT NULL                        | Nome do item                                             |
-| description                  | VARCHAR(500) | NOT NULL                        | Descrição do item                                        |
-| price                        | DOUBLE       | NOT NULL                        | Preço do item                                            |
-| photo_path                   | VARCHAR(255) | NULL                            | Caminho para a foto do item                              |
-| available_only_at_restaurant | BOOLEAN      | DEFAULT FALSE                   | Se o item só pode ser consumido no restaurante          |
-
-**Observações**:
-- O campo `email` possui constraint de unicidade garantida pelo banco de dados.
-- O campo `login` possui constraint de unicidade e não pode ser atualizado após criação.
-- O campo `created_at` é definido automaticamente no momento da inserção.
-- O campo `last_update` é atualizado automaticamente em qualquer modificação do registro.
-- **Nova estrutura**: MenuItem -> Restaurant (ManyToOne) - Relacionamento direto simplificado
-- **Legacy**: User -> UserType (ManyToOne), Restaurant -> User (ManyToOne), Menu -> Restaurant (ManyToOne), ItemMenu -> Menu (ManyToOne)
 
 ## Regras Gerais de Validação
 
@@ -326,10 +309,11 @@ Para importar a coleção no Postman:
 - **email**: obrigatório, único e válido (deve conter @).
 - **login**: obrigatório, único, definido na criação e não pode ser alterado.
 - **password**: obrigatório na criação, só pode ser alterado pelo endpoint de troca de senha.
-- **typePerson**: deve ser `1` para `cliente` ou `2` para `dono_restaurante`.
+- **typePerson**: (nota) o banco usa `user_type_id` -> referenciar `user_types`; na aplicação o fluxo trata os tipos de usuário esperados (cliente, dono_restaurante).
 - **address**: opcional, mas válido se fornecido.
 - **createdAt**: gerado automaticamente no momento da criação.
 - **lastUpdate**: atualizado automaticamente sempre que o usuário é modificado.
+
 
 ## Tipos de Usuário
 

@@ -1,7 +1,7 @@
 package br.com.tastemanager.infrastructure.controller;
 
 import br.com.tastemanager.application.service.MenuService;
-import br.com.tastemanager.infrastructure.controller.openapi.MenuItemControllerDocs;
+import br.com.tastemanager.infrastructure.controller.openapi.MenuControllerDocs;
 import br.com.tastemanager.shared.dto.request.MenuRequestDTO;
 import br.com.tastemanager.shared.dto.request.MenuUpdateRequestDTO;
 import br.com.tastemanager.shared.dto.response.MenuByRestaurantResponseDTO;
@@ -11,9 +11,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -22,8 +22,8 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1")
-public class MenuController implements MenuItemControllerDocs {
+@RequestMapping("/api/v1/menu")
+public class MenuController implements MenuControllerDocs {
 
     private final MenuService menuItemService;
 
@@ -31,7 +31,7 @@ public class MenuController implements MenuItemControllerDocs {
         this.menuItemService = menuItemService;
     }
 
-    @PostMapping("/menu/create/{restaurantId}")
+    @PostMapping("/create/{restaurantId}")
     public ResponseEntity<List<MenuByRestaurantResponseDTO>> createMenuItem(
             @PathVariable Long restaurantId,
             @Valid @RequestBody List<MenuRequestDTO> requestDTO) {
@@ -40,7 +40,7 @@ public class MenuController implements MenuItemControllerDocs {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
-    @GetMapping("/menu/find-all")
+    @GetMapping("/find-all")
     public ResponseEntity<List<MenuResponseDTO>> findAllMenuItems(
             @RequestParam int page,
             @RequestParam int size) {
@@ -49,33 +49,40 @@ public class MenuController implements MenuItemControllerDocs {
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
-    @GetMapping("/menu/find-by-restaurant")
+    @GetMapping("/find-by-restaurant")
     public ResponseEntity<List<MenuByRestaurantResponseDTO>> findMenuItemsByRestaurant(@RequestParam("id") Long restaurantId) {
         List<MenuByRestaurantResponseDTO> response = menuItemService.findMenuItemsByRestaurant(restaurantId);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
-    @GetMapping("/menu/find-by-id/{id}")
+    @GetMapping("/find-by-id/{id}")
     public ResponseEntity<MenuResponseDTO> findMenuItemById(@PathVariable Long id) {
         MenuResponseDTO response = menuItemService.findMenuItemById(id);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
-    @PatchMapping("/menu/update/{restaurantId}/{itemId}")
+    @PutMapping("/update")
     public ResponseEntity<MenuResponseDTO> updateMenuItem(
-            @PathVariable Long restaurantId,
-            @PathVariable Long itemId,
+            @RequestParam Long restaurantId,
+            @RequestParam Long itemId,
             @Valid @RequestBody MenuUpdateRequestDTO requestDTO) {
 
         MenuResponseDTO response = menuItemService.updateMenuItem(restaurantId, itemId, requestDTO);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
-    @DeleteMapping("/menu/delete/{restaurantId}/{itemId}")
+    @DeleteMapping("/delete-item")
     public ResponseEntity<String> deleteMenuItem(
-            @PathVariable Long restaurantId,
-            @PathVariable Long itemId) {
-        String response = menuItemService.deleteMenuItem(restaurantId, itemId);
+        @RequestParam Long restaurantId,
+        @RequestParam Long restaurantItemNumber) {
+        String response = menuItemService.deleteMenuItemByRestaurantItemNumber(restaurantId, restaurantItemNumber);
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+    @DeleteMapping("/delete-all/{restaurantId}")
+    public ResponseEntity<String> deleteAllMenuItems(
+        @PathVariable Long restaurantId) {
+        String response = menuItemService.deleteAllMenuItemsByRestaurant(restaurantId);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 

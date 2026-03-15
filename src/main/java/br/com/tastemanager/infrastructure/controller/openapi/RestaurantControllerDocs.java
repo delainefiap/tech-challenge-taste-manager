@@ -51,7 +51,7 @@ public interface RestaurantControllerDocs {
 
     @Operation(summary = "Exclui um restaurante.", description = "Exclui um restaurante pelo ID.")
     @ApiResponses({
-        @ApiResponse(responseCode = "204", description = "Restaurante excluído com sucesso."),
+        @ApiResponse(responseCode = "200", description = "Restaurante excluído com sucesso."),
         @ApiResponse(responseCode = "404", description = "Restaurante não encontrado.")
     })
     @DeleteMapping("/delete")

@@ -1,28 +1,17 @@
 package br.com.tastemanager.shared.dto.request;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
 
 public class MenuUpdateRequestDTO {
 
-    private Long itemId;
     private String name;
     private String description;
     private Double price;
+    private Long restaurantItemNumber;
 
     @JsonProperty("availableOnlyAtRestaurant")
     private Boolean availableOnlyAtRestaurant;
     private String imagePath;
-
-    public Long getId() {
-        return itemId;
-    }
-
-    public void setId(Long menuId) {
-        this.itemId = menuId;
-    }
 
     public String getName() {
         return name;
@@ -46,6 +35,14 @@ public class MenuUpdateRequestDTO {
 
     public void setPrice(Double price) {
         this.price = price;
+    }
+
+    public Long getRestaurantItemNumber() {
+        return restaurantItemNumber;
+    }
+
+    public void setRestaurantItemNumber(Long restaurantItemNumber) {
+        this.restaurantItemNumber = restaurantItemNumber;
     }
 
     public Boolean getAvailableOnlyAtRestaurant() {
