@@ -12,7 +12,6 @@ services:
       - "3306:3306"
     volumes:
       - db_data:/var/lib/mysql
-      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
       interval: 10s
@@ -31,8 +30,14 @@ services:
       - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/tastemanager?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
       - SPRING_DATASOURCE_USERNAME=tastemanager
       - SPRING_DATASOURCE_PASSWORD=tastemanager
+      - SPRING_SQL_INIT_MODE=always
+      - SPRING_SQL_INIT_PLATFORM=mysql
+      - SPRING_SQL_INIT_ENCODING=UTF-8
     depends_on:
       mysql:
         condition: service_healthy
+    volumes:
+      - ./src/main/resources:/app/resources:ro
+    restart: unless-stopped
 volumes:
   db_data:

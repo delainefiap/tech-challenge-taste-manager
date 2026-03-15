@@ -1,7 +1,7 @@
 package br.com.tastemanager.shared.validator;
 
 import br.com.tastemanager.domain.entity.User;
-import br.com.tastemanager.domain.repository.MenuItemRepository;
+import br.com.tastemanager.domain.repository.MenuRepository;
 import br.com.tastemanager.domain.repository.RestaurantRepository;
 import br.com.tastemanager.domain.repository.UserRepository;
 import org.springframework.stereotype.Component;
@@ -11,9 +11,9 @@ public class RestaurantValidator {
 
     private final RestaurantRepository restaurantRepository;
     private final UserRepository userRepository;
-    private final MenuItemRepository menuRepository;
+    private final MenuRepository menuRepository;
 
-    public RestaurantValidator(RestaurantRepository restaurantRepository, UserRepository userRepository, MenuItemRepository menuRepository) {
+    public RestaurantValidator(RestaurantRepository restaurantRepository, UserRepository userRepository, MenuRepository menuRepository) {
         this.restaurantRepository = restaurantRepository;
         this.userRepository = userRepository;
         this.menuRepository = menuRepository;

@@ -5,22 +5,24 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 
-public class MenuItemRequestDTO {
+public class MenuUpdateRequestDTO {
 
-    @NotBlank(message = "The name cannot be blank")
+    private Long itemId;
     private String name;
-
-    @NotBlank(message = "You should provide a description")
     private String description;
-
-    @NotNull(message = "The price must not be nul")
-    @Positive(message = "The price must be a positive value")
     private Double price;
 
     @JsonProperty("availableOnlyAtRestaurant")
-    private Boolean availableOnlyAtRestaurant = false;
-
+    private Boolean availableOnlyAtRestaurant;
     private String imagePath;
+
+    public Long getId() {
+        return itemId;
+    }
+
+    public void setId(Long menuId) {
+        this.itemId = menuId;
+    }
 
     public String getName() {
         return name;

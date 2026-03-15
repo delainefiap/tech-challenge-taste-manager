@@ -1,8 +1,8 @@
 package br.com.tastemanager.shared.dto.response;
 
-public class MenuItemResponseDTO {
+public class MenuByRestaurantResponseDTO {
 
-    private Long id;
+    private Long restaurantItemNumber;
     private String name;
     private String description;
     private Double price;
@@ -10,13 +10,13 @@ public class MenuItemResponseDTO {
     private Boolean availableOnlyAtRestaurant;
     private RestaurantResponseDTO restaurant;
 
-    public MenuItemResponseDTO() {
+    public MenuByRestaurantResponseDTO() {
     }
 
-    public MenuItemResponseDTO(Long id, String name, String description, Double price,
-                              String imagePath, Boolean availableOnlyAtRestaurant,
-                              RestaurantResponseDTO restaurant) {
-        this.id = id;
+    public MenuByRestaurantResponseDTO(Long restaurantItemNumber, String name, String description, Double price,
+                                       String imagePath, Boolean availableOnlyAtRestaurant,
+                                       RestaurantResponseDTO restaurant) {
+        this.restaurantItemNumber = restaurantItemNumber;
         this.name = name;
         this.description = description;
         this.price = price;
@@ -25,12 +25,12 @@ public class MenuItemResponseDTO {
         this.restaurant = restaurant;
     }
 
-    public Long getId() {
-        return id;
+    public Long getRestaurantItemNumber() {
+        return restaurantItemNumber;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setRestaurantItemNumber(Long restaurantItemNumber) {
+        this.restaurantItemNumber = restaurantItemNumber;
     }
 
     public String getName() {

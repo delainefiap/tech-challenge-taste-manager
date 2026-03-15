@@ -105,4 +105,12 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(problem);
     }
 
+    @ExceptionHandler(RestaurantNotFoundException.class)
+    public ResponseEntity<ProblemDetail> handleRestaurantNotFoundException(RestaurantNotFoundException ex) {
+        ProblemDetail problem = ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, ex.getMessage());
+        problem.setTitle("Restaurant Not Found");
+        problem.setType(URI.create("https://datatracker.ietf.org/doc/html/rfc7807#section-3.1"));
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(problem);
+    }
+
 }

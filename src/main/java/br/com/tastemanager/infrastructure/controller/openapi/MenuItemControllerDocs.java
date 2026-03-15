@@ -1,12 +1,14 @@
 package br.com.tastemanager.infrastructure.controller.openapi;
 
-
-import br.com.tastemanager.shared.dto.request.MenuItemRequestDTO;
-import br.com.tastemanager.shared.dto.request.MenuItemUpdateRequestDTO;
-import br.com.tastemanager.shared.dto.response.MenuItemResponseDTO;
+import br.com.tastemanager.shared.dto.request.MenuRequestDTO;
+import br.com.tastemanager.shared.dto.request.MenuUpdateRequestDTO;
+import br.com.tastemanager.shared.dto.response.MenuByRestaurantResponseDTO;
+import br.com.tastemanager.shared.dto.response.MenuCreateResponseDTO;
+import br.com.tastemanager.shared.dto.response.MenuResponseDTO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,18 +23,18 @@ import java.util.List;
 public interface MenuItemControllerDocs {
 
     @Operation(
-            summary = "Cria um item do cardápio para um restaurante",
-            description = "Cria um novo item do cardápio associado a um restaurante específico"
+            summary = "Cria itens do cardápio para um restaurante",
+            description = "Cria uma lista de novos itens do cardápio associados a um restaurante específico"
     )
     @ApiResponses({
             @ApiResponse(responseCode = "201", description = "Item do cardápio criado com sucesso"),
             @ApiResponse(responseCode = "400", description = "Dados inválidos"),
             @ApiResponse(responseCode = "404", description = "Restaurante não encontrado")
     })
-    @PostMapping("/restaurants/{restaurantId}/menu-items")
-    ResponseEntity<MenuItemResponseDTO> createMenuItem(
+    @PostMapping("/menu/create/{restaurantId}")
+    ResponseEntity<List<MenuByRestaurantResponseDTO>> createMenuItem(
             @PathVariable Long restaurantId,
-            @RequestBody MenuItemRequestDTO requestDTO);
+            @Valid @RequestBody List<MenuRequestDTO> requestDTO);
 
     @Operation(
             summary = "Lista todos os itens do cardápio",
@@ -41,8 +43,8 @@ public interface MenuItemControllerDocs {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Lista de itens retornada com sucesso")
     })
-    @GetMapping("/menu-items")
-    ResponseEntity<List<MenuItemResponseDTO>> findAllMenuItems(
+    @GetMapping("/menu/find-all")
+    ResponseEntity<List<MenuResponseDTO>> findAllMenuItems(
             @RequestParam int page,
             @RequestParam int size);
 
@@ -55,18 +57,7 @@ public interface MenuItemControllerDocs {
             @ApiResponse(responseCode = "404", description = "Restaurante não encontrado")
     })
     @GetMapping("/restaurants/{restaurantId}/menu-items")
-    ResponseEntity<List<MenuItemResponseDTO>> findMenuItemsByRestaurant(@PathVariable Long restaurantId);
-
-    @Operation(
-            summary = "Busca um item do cardápio por ID",
-            description = "Retorna os detalhes de um item específico do cardápio"
-    )
-    @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Item encontrado com sucesso"),
-            @ApiResponse(responseCode = "404", description = "Item não encontrado")
-    })
-    @GetMapping("/menu-items/{id}")
-    ResponseEntity<MenuItemResponseDTO> findMenuItemById(@PathVariable Long id);
+    ResponseEntity<List<MenuByRestaurantResponseDTO>> findMenuItemsByRestaurant(@PathVariable Long restaurantId);
 
     @Operation(
             summary = "Atualiza um item do cardápio",
@@ -77,10 +68,11 @@ public interface MenuItemControllerDocs {
             @ApiResponse(responseCode = "400", description = "Dados inválidos"),
             @ApiResponse(responseCode = "404", description = "Item não encontrado")
     })
-    @PatchMapping("/menu-items/{id}")
-    ResponseEntity<MenuItemResponseDTO> updateMenuItem(
-            @PathVariable Long id,
-            @RequestBody MenuItemUpdateRequestDTO requestDTO);
+    @PatchMapping("/menu/update/{restaurantId}/{itemId}")
+    ResponseEntity<MenuResponseDTO> updateMenuItem(
+            @PathVariable Long restaurantId,
+            @PathVariable Long itemId,
+            @Valid @RequestBody MenuUpdateRequestDTO requestDTO);
 
     @Operation(
             summary = "Exclui um item do cardápio",
@@ -90,6 +82,9 @@ public interface MenuItemControllerDocs {
             @ApiResponse(responseCode = "200", description = "Item excluído com sucesso"),
             @ApiResponse(responseCode = "404", description = "Item não encontrado")
     })
-    @DeleteMapping("/menu-items/{id}")
-    ResponseEntity<String> deleteMenuItem(@PathVariable Long id);
+    @DeleteMapping("/menu/delete/{restaurantId}/{itemId}}")
+
+    ResponseEntity<String> deleteMenuItem( @PathVariable Long restaurantId,
+                                           @PathVariable Long itemId);
+
 }

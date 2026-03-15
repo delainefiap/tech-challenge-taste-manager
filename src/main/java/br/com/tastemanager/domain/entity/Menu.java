@@ -17,11 +17,11 @@ import lombok.NoArgsConstructor;
 import java.io.Serializable;
 
 @Entity
-@Table(name = "menu_items")
+@Table(name = "menu")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class MenuItem implements Serializable {
+public class Menu implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -32,6 +32,9 @@ public class MenuItem implements Serializable {
     @ManyToOne
     @JoinColumn(name = "restaurant_id", nullable = false)
     private Restaurant restaurant;
+
+    @Column(name = "restaurant_item_number", nullable = false)
+    private Long restaurantItemNumber;
 
     @NotBlank(message = "O nome não pode estar em branco")
     @Column(nullable = false)

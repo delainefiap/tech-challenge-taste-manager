@@ -1,39 +1,41 @@
 package br.com.tastemanager.shared.mapper;
 
-import br.com.tastemanager.domain.entity.MenuItem;
+import br.com.tastemanager.domain.entity.Menu;
 import br.com.tastemanager.domain.entity.Restaurant;
-import br.com.tastemanager.shared.dto.request.MenuItemRequestDTO;
-import br.com.tastemanager.shared.dto.request.MenuItemUpdateRequestDTO;
-import br.com.tastemanager.shared.dto.response.MenuItemResponseDTO;
+import br.com.tastemanager.shared.dto.request.MenuRequestDTO;
+import br.com.tastemanager.shared.dto.request.MenuUpdateRequestDTO;
+import br.com.tastemanager.shared.dto.response.MenuByRestaurantResponseDTO;
+import br.com.tastemanager.shared.dto.response.MenuResponseDTO;
 import br.com.tastemanager.shared.dto.response.RestaurantResponseDTO;
 import org.springframework.stereotype.Component;
 
 @Component
-public class MenuItemMapper {
+public class MenuMapper {
 
-    public MenuItem toEntity(MenuItemRequestDTO dto, Restaurant restaurant) {
+    public Menu toEntity(MenuRequestDTO dto, Restaurant restaurant) {
         if (dto == null) {
             return null;
         }
 
-        MenuItem menuItem = new MenuItem();
-        menuItem.setName(dto.getName());
-        menuItem.setDescription(dto.getDescription());
-        menuItem.setPrice(dto.getPrice());
-        menuItem.setImagePath(dto.getImagePath());
-        menuItem.setAvailableOnlyAtRestaurant(dto.getAvailableOnlyAtRestaurant());
-        menuItem.setRestaurant(restaurant);
+        Menu menu = new Menu();
+        menu.setName(dto.getName());
+        menu.setDescription(dto.getDescription());
+        menu.setPrice(dto.getPrice());
+        menu.setImagePath(dto.getImagePath());
+        menu.setAvailableOnlyAtRestaurant(dto.getAvailableOnlyAtRestaurant());
+        menu.setRestaurant(restaurant);
 
-        return menuItem;
+        return menu;
     }
 
-    public MenuItemResponseDTO toResponseDTO(MenuItem entity) {
+    public MenuResponseDTO toResponseDTO(Menu entity) {
         if (entity == null) {
             return null;
         }
 
-        MenuItemResponseDTO dto = new MenuItemResponseDTO();
+        MenuResponseDTO dto = new MenuResponseDTO();
         dto.setId(entity.getId());
+        dto.setRestaurantItemNumber(entity.getRestaurantItemNumber());
         dto.setName(entity.getName());
         dto.setDescription(entity.getDescription());
         dto.setPrice(entity.getPrice());
@@ -47,7 +49,27 @@ public class MenuItemMapper {
         return dto;
     }
 
-    public void updateEntityFromDTO(MenuItemUpdateRequestDTO dto, MenuItem entity) {
+    public MenuByRestaurantResponseDTO toMenuByRestaurantResponseDTO(Menu entity) {
+        if (entity == null) {
+            return null;
+        }
+
+        MenuByRestaurantResponseDTO dto = new MenuByRestaurantResponseDTO();
+        dto.setRestaurantItemNumber(entity.getRestaurantItemNumber());
+        dto.setName(entity.getName());
+        dto.setDescription(entity.getDescription());
+        dto.setPrice(entity.getPrice());
+        dto.setImagePath(entity.getImagePath());
+        dto.setAvailableOnlyAtRestaurant(entity.getAvailableOnlyAtRestaurant());
+
+        if (entity.getRestaurant() != null) {
+            dto.setRestaurant(mapRestaurantBasic(entity.getRestaurant()));
+        }
+
+        return dto;
+    }
+
+    public void updateEntityFromDTO(MenuUpdateRequestDTO dto, Menu entity) {
         if (dto == null || entity == null) {
             return;
         }
@@ -80,6 +102,9 @@ public class MenuItemMapper {
         dto.setAddress(restaurant.getAddress());
         dto.setTypeKitchen(restaurant.getTypeKitchen());
         dto.setOpeningHours(restaurant.getOpeningHours());
+        if (restaurant.getOwner() != null) {
+            dto.setOwnerName(restaurant.getOwner().getName());
+        }
         return dto;
     }
 }
