@@ -1,7 +1,8 @@
 package br.com.tastemanager.controller;
 
-import br.com.tastemanager.exception.GlobalExceptionHandler;
-import br.com.tastemanager.service.UserService;
+import br.com.tastemanager.infrastructure.controller.UserController;
+import br.com.tastemanager.shared.exception.GlobalExceptionHandler;
+import br.com.tastemanager.application.service.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

@@ -29,11 +29,11 @@ class UserServiceTest {
 //    @Mock
 //    private PasswordService passwordService;
 //    @Mock
-//    private UserValidator userValidator;
+//    private br.com.tastemanager.shared.validator.UserValidator userValidator;
 //    @Mock
-//    private br.com.tastemanager.validator.UserTypeValidator userTypeValidator;
+//    private br.com.tastemanager.shared.validator.UserTypeValidator userTypeValidator;
 //    @Mock
-//    private br.com.tastemanager.repository.UserTypeRepository userTypeRepository;
+//    private br.com.tastemanager.domain.repository.UserTypeRepository userTypeRepository;
 //    @InjectMocks
 //    private UserService userService;
 //

@@ -1,10 +1,10 @@
 package br.com.tastemanager.helper;
 
-import br.com.tastemanager.dto.request.ChangePasswordRequestDTO;
-import br.com.tastemanager.dto.request.UserRequestDTO;
-import br.com.tastemanager.dto.request.UserUpdateRequestDTO;
-import br.com.tastemanager.entity.User;
-import br.com.tastemanager.entity.UserType;
+import br.com.tastemanager.shared.dto.request.ChangePasswordRequestDTO;
+import br.com.tastemanager.shared.dto.request.UserRequestDTO;
+import br.com.tastemanager.shared.dto.request.UserUpdateRequestDTO;
+import br.com.tastemanager.domain.entity.User;
+import br.com.tastemanager.domain.entity.UserType;
 
 public class TestDataHelper {
     public static UserRequestDTO buildValidUserRequest() {

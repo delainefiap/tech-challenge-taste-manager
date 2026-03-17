@@ -1,7 +1,8 @@
 package br.com.tastemanager.service;
 
-import br.com.tastemanager.entity.User;
-import br.com.tastemanager.repository.UserRepository;
+import br.com.tastemanager.application.service.PasswordService;
+import br.com.tastemanager.domain.entity.User;
+import br.com.tastemanager.domain.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;

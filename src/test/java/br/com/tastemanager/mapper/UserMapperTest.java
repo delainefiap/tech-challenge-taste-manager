@@ -1,10 +1,11 @@
 package br.com.tastemanager.mapper;
 
-import br.com.tastemanager.dto.request.UserRequestDTO;
-import br.com.tastemanager.dto.request.UserUpdateRequestDTO;
-import br.com.tastemanager.dto.response.UserResponseDTO;
-import br.com.tastemanager.entity.User;
-import br.com.tastemanager.entity.UserType;
+import br.com.tastemanager.shared.dto.request.UserRequestDTO;
+import br.com.tastemanager.shared.dto.request.UserUpdateRequestDTO;
+import br.com.tastemanager.shared.dto.response.UserResponseDTO;
+import br.com.tastemanager.domain.entity.User;
+import br.com.tastemanager.domain.entity.UserType;
+import br.com.tastemanager.shared.mapper.UserMapper;
 import org.junit.jupiter.api.Test;
 import org.mapstruct.factory.Mappers;
 

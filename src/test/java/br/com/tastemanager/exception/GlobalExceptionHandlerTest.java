@@ -1,5 +1,8 @@
 package br.com.tastemanager.exception;
 
+import br.com.tastemanager.shared.exception.GlobalExceptionHandler;
+import br.com.tastemanager.shared.exception.UserNotFoundException;
+import br.com.tastemanager.shared.exception.UserTypeNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.dao.DataIntegrityViolationException;
