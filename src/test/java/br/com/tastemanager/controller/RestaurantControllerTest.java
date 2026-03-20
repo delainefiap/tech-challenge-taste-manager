@@ -54,5 +54,40 @@ class RestaurantControllerTest {
         assertEquals(200, response.getStatusCode().value());
         assertEquals(list, response.getBody());
     }
-}
 
+    @Test
+    void findRestaurantById_ShouldReturnOk() {
+        RestaurantResponseDTO dto = new RestaurantResponseDTO();
+        when(restaurantService.findRestaurantById(5L)).thenReturn(dto);
+
+        ResponseEntity<RestaurantResponseDTO> response = restaurantController.findRestaurantById(5L);
+
+        assertEquals(200, response.getStatusCode().value());
+        assertEquals(dto, response.getBody());
+        verify(restaurantService).findRestaurantById(5L);
+    }
+
+    @Test
+    void updateRestaurant_ShouldReturnOk() {
+        RestaurantRequestDTO request = new RestaurantRequestDTO();
+        RestaurantResponseDTO dto = new RestaurantResponseDTO();
+        when(restaurantService.updateRestaurant(2L, request)).thenReturn(dto);
+
+        ResponseEntity<RestaurantResponseDTO> response = restaurantController.updateRestaurant(2L, request);
+
+        assertEquals(200, response.getStatusCode().value());
+        assertEquals(dto, response.getBody());
+        verify(restaurantService).updateRestaurant(2L, request);
+    }
+
+    @Test
+    void deleteRestaurant_ShouldReturnOk() {
+        when(restaurantService.deleteRestaurant(3L)).thenReturn("ok");
+
+        ResponseEntity<String> response = restaurantController.deleteRestaurant(3L);
+
+        assertEquals(200, response.getStatusCode().value());
+        assertEquals("ok", response.getBody());
+        verify(restaurantService).deleteRestaurant(3L);
+    }
+}

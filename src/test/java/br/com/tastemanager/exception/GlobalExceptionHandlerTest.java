@@ -115,4 +115,39 @@ class GlobalExceptionHandlerTest {
         assertEquals("User type not found", response.getBody().getDetail());
     }
 
+    @Test
+    void handleGeneralException_WithDataIntegrityCause_ShouldReturnConflict() {
+        GlobalExceptionHandler handler = new GlobalExceptionHandler();
+        Exception exception = new Exception("wrapper", new DataIntegrityViolationException("FK violation"));
+
+        ResponseEntity<ProblemDetail> response = handler.handleGeneralException(exception);
+
+        assertEquals(409, response.getStatusCode().value());
+        assertNotNull(response.getBody());
+        assertEquals("Data Integrity Violation", response.getBody().getTitle());
+    }
+
+    @Test
+    void handleItemMenuNotFoundException_ShouldReturnNotFound() {
+        GlobalExceptionHandler handler = new GlobalExceptionHandler();
+        var exception = new br.com.tastemanager.shared.exception.ItemMenuNotFoundException("item not found");
+
+        ResponseEntity<ProblemDetail> response = handler.handleItemMenuNotFoundException(exception);
+
+        assertEquals(404, response.getStatusCode().value());
+        assertNotNull(response.getBody());
+        assertEquals("Item Menu Not Found", response.getBody().getTitle());
+    }
+
+    @Test
+    void handleRestaurantNotFoundException_ShouldReturnNotFound() {
+        GlobalExceptionHandler handler = new GlobalExceptionHandler();
+        var exception = new br.com.tastemanager.shared.exception.RestaurantNotFoundException("restaurant not found");
+
+        ResponseEntity<ProblemDetail> response = handler.handleRestaurantNotFoundException(exception);
+
+        assertEquals(404, response.getStatusCode().value());
+        assertNotNull(response.getBody());
+        assertEquals("Restaurant Not Found", response.getBody().getTitle());
+    }
 }

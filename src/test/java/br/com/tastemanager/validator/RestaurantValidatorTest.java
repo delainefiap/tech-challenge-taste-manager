@@ -61,5 +61,32 @@ class RestaurantValidatorTest {
 
         assertThrows(IllegalArgumentException.class, () -> restaurantValidator.validateRestaurantHasNoMenus(3L));
     }
-}
 
+    @Test
+    void validateRestaurantName_WhenAvailable_ShouldNotThrow() {
+        when(restaurantRepository.existsByName("Rest")) .thenReturn(false);
+
+        assertDoesNotThrow(() -> restaurantValidator.validateRestaurantName("Rest"));
+    }
+
+    @Test
+    void validateRestaurantExists_WhenNotExists_ShouldThrow() {
+        when(restaurantRepository.existsById(99L)).thenReturn(false);
+
+        assertThrows(IllegalArgumentException.class, () -> restaurantValidator.validateRestaurantExists(99L));
+    }
+
+    @Test
+    void validateRestaurantExists_WhenExists_ShouldNotThrow() {
+        when(restaurantRepository.existsById(1L)).thenReturn(true);
+
+        assertDoesNotThrow(() -> restaurantValidator.validateRestaurantExists(1L));
+    }
+
+    @Test
+    void validateOwner_WhenUserNotFound_ShouldThrow() {
+        when(userRepository.findById(9L)).thenReturn(Optional.empty());
+
+        assertThrows(IllegalArgumentException.class, () -> restaurantValidator.validateOwner(9L));
+    }
+}

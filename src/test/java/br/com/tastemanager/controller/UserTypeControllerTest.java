@@ -54,5 +54,41 @@ class UserTypeControllerTest {
         assertEquals(200, response.getStatusCode().value());
         assertEquals(list, response.getBody());
     }
-}
 
+    @Test
+    void updateUserType_ShouldReturnOk() {
+        UserTypeRequestDTO request = new UserTypeRequestDTO("manager", "desc");
+        UserTypeResponseDTO responseDTO = new UserTypeResponseDTO();
+
+        when(userTypeService.updateUserType(2L, request)).thenReturn(responseDTO);
+
+        ResponseEntity<UserTypeResponseDTO> response = userTypeController.updateUserType(2L, request);
+
+        assertEquals(200, response.getStatusCode().value());
+        assertEquals(responseDTO, response.getBody());
+        verify(userTypeService).updateUserType(2L, request);
+    }
+
+    @Test
+    void deleteUserType_ShouldReturnOk() {
+        when(userTypeService.deleteUserType(3L)).thenReturn("ok");
+
+        ResponseEntity<String> response = userTypeController.deleteUserType(3L);
+
+        assertEquals(200, response.getStatusCode().value());
+        assertEquals("ok", response.getBody());
+        verify(userTypeService).deleteUserType(3L);
+    }
+
+    @Test
+    void findUserTypeById_ShouldReturnOk() {
+        UserTypeResponseDTO responseDTO = new UserTypeResponseDTO();
+        when(userTypeService.findUserTypeById(4L)).thenReturn(responseDTO);
+
+        ResponseEntity<UserTypeResponseDTO> response = userTypeController.findUserTypeById(4L);
+
+        assertEquals(200, response.getStatusCode().value());
+        assertEquals(responseDTO, response.getBody());
+        verify(userTypeService).findUserTypeById(4L);
+    }
+}

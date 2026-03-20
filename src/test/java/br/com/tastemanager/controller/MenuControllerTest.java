@@ -56,5 +56,63 @@ class MenuControllerTest {
         assertEquals(200, response.getStatusCode().value());
         assertEquals(output, response.getBody());
     }
-}
 
+    @Test
+    void findMenuItemsByRestaurant_ShouldReturnOk() {
+        List<MenuByRestaurantResponseDTO> output = List.of(new MenuByRestaurantResponseDTO());
+        when(menuService.findMenuItemsByRestaurant(2L)).thenReturn(output);
+
+        ResponseEntity<List<MenuByRestaurantResponseDTO>> response = menuController.findMenuItemsByRestaurant(2L);
+
+        assertEquals(200, response.getStatusCode().value());
+        assertEquals(output, response.getBody());
+        verify(menuService).findMenuItemsByRestaurant(2L);
+    }
+
+    @Test
+    void findMenuItemById_ShouldReturnOk() {
+        MenuResponseDTO dto = new MenuResponseDTO();
+        when(menuService.findMenuItemById(9L)).thenReturn(dto);
+
+        ResponseEntity<MenuResponseDTO> response = menuController.findMenuItemById(9L);
+
+        assertEquals(200, response.getStatusCode().value());
+        assertEquals(dto, response.getBody());
+        verify(menuService).findMenuItemById(9L);
+    }
+
+    @Test
+    void updateMenuItem_ShouldReturnOk() {
+        var request = new br.com.tastemanager.shared.dto.request.MenuUpdateRequestDTO();
+        MenuResponseDTO dto = new MenuResponseDTO();
+        when(menuService.updateMenuItem(1L, 2L, request)).thenReturn(dto);
+
+        ResponseEntity<MenuResponseDTO> response = menuController.updateMenuItem(1L, 2L, request);
+
+        assertEquals(200, response.getStatusCode().value());
+        assertEquals(dto, response.getBody());
+        verify(menuService).updateMenuItem(1L, 2L, request);
+    }
+
+    @Test
+    void deleteMenuItem_ShouldReturnOk() {
+        when(menuService.deleteMenuItemByRestaurantItemNumber(1L, 3L)).thenReturn("ok");
+
+        ResponseEntity<String> response = menuController.deleteMenuItem(1L, 3L);
+
+        assertEquals(200, response.getStatusCode().value());
+        assertEquals("ok", response.getBody());
+        verify(menuService).deleteMenuItemByRestaurantItemNumber(1L, 3L);
+    }
+
+    @Test
+    void deleteAllMenuItems_ShouldReturnOk() {
+        when(menuService.deleteAllMenuItemsByRestaurant(4L)).thenReturn("ok");
+
+        ResponseEntity<String> response = menuController.deleteAllMenuItems(4L);
+
+        assertEquals(200, response.getStatusCode().value());
+        assertEquals("ok", response.getBody());
+        verify(menuService).deleteAllMenuItemsByRestaurant(4L);
+    }
+}

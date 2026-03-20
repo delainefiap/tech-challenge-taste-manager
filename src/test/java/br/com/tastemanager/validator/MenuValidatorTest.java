@@ -95,4 +95,66 @@ class MenuValidatorTest {
 
         assertThrows(IllegalArgumentException.class, () -> menuValidator.validateMenuItemName("Pizza", 1L));
     }
+
+    @Test
+    void validateMenuItemExistsById_WhenIdIsNull_ShouldThrow() {
+        assertThrows(IllegalArgumentException.class, () -> menuValidator.validateMenuItemExists(null));
+    }
+
+    @Test
+    void validateRestaurantItemNumber_WhenDuplicate_ShouldThrow() {
+        Menu existing = new Menu();
+        existing.setId(2L);
+        when(menuRepository.findByRestaurantIdAndRestaurantItemNumber(1L, 3L))
+                .thenReturn(Optional.of(existing));
+
+        assertThrows(IllegalArgumentException.class,
+                () -> menuValidator.validateRestaurantItemNumber(1L, 3, 1L));
+    }
+
+    @Test
+    void validateRestaurantItemNumber_WhenSameItem_ShouldNotThrow() {
+        Menu existing = new Menu();
+        existing.setId(2L);
+        when(menuRepository.findByRestaurantIdAndRestaurantItemNumber(1L, 3L))
+                .thenReturn(Optional.of(existing));
+
+        assertDoesNotThrow(() -> menuValidator.validateRestaurantItemNumber(1L, 3, 2L));
+    }
+
+    @Test
+    void validateMenuItemExistsById_WhenExists_ShouldNotThrow() {
+        when(menuRepository.existsById(1L)).thenReturn(true);
+
+        assertDoesNotThrow(() -> menuValidator.validateMenuItemExists(1L));
+    }
+
+    @Test
+    void validateMenuItemName_WhenValid_ShouldNotThrow() {
+        when(menuRepository.existsByNameAndRestaurantId("Pizza", 1L)).thenReturn(false);
+
+        assertDoesNotThrow(() -> menuValidator.validateMenuItemName("Pizza", 1L));
+    }
+
+    @Test
+    void validateMenuItemOwnership_WhenOwned_ShouldNotThrow() {
+        when(menuRepository.findByIdAndRestaurantId(10L, 1L)).thenReturn(Optional.of(new Menu()));
+
+        assertDoesNotThrow(() -> menuValidator.validateMenuItemOwnership(10L, 1L));
+    }
+
+    @Test
+    void validateMenuItemName_WhenBlank_ShouldThrow() {
+        assertThrows(IllegalArgumentException.class, () -> menuValidator.validateMenuItemName("  ", 1L));
+    }
+
+    @Test
+    void validateMenuItemNameForUpdate_WhenBlank_ShouldThrow() {
+        assertThrows(IllegalArgumentException.class, () -> menuValidator.validateMenuItemNameForUpdate(" ", 1L, 1L));
+    }
+
+    @Test
+    void validateRestaurantItemNumber_WhenNull_ShouldNotThrow() {
+        assertDoesNotThrow(() -> menuValidator.validateRestaurantItemNumber(1L, null, 1L));
+    }
 }

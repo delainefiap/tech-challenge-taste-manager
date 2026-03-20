@@ -25,5 +25,26 @@ class UserTypeMapperTest {
         assertEquals("ADMIN", dto.getName());
         assertEquals("desc", dto.getDescription());
     }
-}
 
+    @Test
+    void mapUserTypeToResponseDTO_ShouldMapFields() {
+        UserType entity = new UserType();
+        entity.setId(10L);
+        entity.setName("ADMIN");
+
+        UserTypeResponseDTO dto = mapper.mapUserTypeToResponseDTO(entity);
+
+        assertEquals(10L, dto.getId());
+        assertEquals("ADMIN", dto.getName());
+    }
+
+    @Test
+    void toResponseDTO_WhenNull_ShouldReturnNull() {
+        assertEquals(null, mapper.toResponseDTO(null));
+    }
+
+    @Test
+    void toRequestDTO_WhenNull_ShouldReturnNull() {
+        assertEquals(null, mapper.toRequestDTO(null));
+    }
+}

@@ -157,6 +157,16 @@ class MenuServiceTest {
     }
 
     @Test
+    void findMenuItemsByRestaurant_WhenEmpty_ShouldReturnEmptyList() {
+        when(menuValidator.validateRestaurant(1L)).thenReturn(new Restaurant());
+        when(menuRepository.findByRestaurantIdOrderByRestaurantItemNumberAsc(1L)).thenReturn(List.of());
+
+        List<MenuByRestaurantResponseDTO> response = menuService.findMenuItemsByRestaurant(1L);
+
+        assertEquals(0, response.size());
+    }
+
+    @Test
     void findMenuItemById_ShouldMapResult() {
         Menu menu = new Menu();
         menu.setId(11L);
@@ -233,6 +243,22 @@ class MenuServiceTest {
         when(menuRepository.findByRestaurantIdAndRestaurantItemNumber(1L, 2L)).thenReturn(Optional.of(menu));
 
         String response = menuService.deleteMenuItemByRestaurantItemNumber(1L, 2L);
+
+        assertEquals("Item do cardápio excluído com sucesso", response);
+        verify(menuRepository).delete(menu);
+    }
+
+    @Test
+    void deleteMenuItem_ShouldDeleteAndReturnMessage() {
+        Restaurant restaurant = new Restaurant();
+        Menu menu = new Menu();
+        menu.setId(1L);
+        menu.setRestaurant(restaurant);
+
+        when(menuValidator.validateRestaurant(1L)).thenReturn(restaurant);
+        when(menuValidator.validateMenuItemExists(1L, 2L)).thenReturn(menu);
+
+        String response = menuService.deleteMenuItem(1L, 2L);
 
         assertEquals("Item do cardápio excluído com sucesso", response);
         verify(menuRepository).delete(menu);

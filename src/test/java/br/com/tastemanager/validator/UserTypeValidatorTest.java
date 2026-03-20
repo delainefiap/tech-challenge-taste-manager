@@ -49,10 +49,31 @@ class UserTypeValidatorTest {
     }
 
     @Test
+    void validateUserTypeId_WhenNull_ShouldThrow() {
+        when(userTypeRepository.findById(null)).thenReturn(Optional.empty());
+        when(userTypeRepository.findAll()).thenReturn(List.of());
+
+        assertThrows(UserTypeNotFoundException.class, () -> userTypeValidator.validateUserTypeId(null));
+    }
+
+    @Test
+    void validateUserTypeExistsById_WhenExists_ShouldNotThrow() {
+        when(userTypeRepository.existsById(1L)).thenReturn(true);
+
+        assertDoesNotThrow(() -> userTypeValidator.validateUserTypeExistsById(1L));
+    }
+
+    @Test
     void validateUserTypeIsInUse_WhenCountGreaterThanZero_ShouldThrow() {
         when(userRepository.countByUserTypeId(2L)).thenReturn(3L);
 
         assertThrows(IllegalArgumentException.class, () -> userTypeValidator.validateUserTypeIsInUse(2L));
     }
-}
 
+    @Test
+    void validateUserTypeIsInUse_WhenZero_ShouldNotThrow() {
+        when(userRepository.countByUserTypeId(2L)).thenReturn(0L);
+
+        assertDoesNotThrow(() -> userTypeValidator.validateUserTypeIsInUse(2L));
+    }
+}

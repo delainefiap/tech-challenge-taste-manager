@@ -52,4 +52,42 @@ class UserValidatorTest {
     void validateUserEmail_WhenMalformed_ShouldThrow() {
         assertThrows(IllegalArgumentException.class, () -> userValidator.validateUserEmail("invalid"));
     }
+
+    @Test
+    void validateUserExistsById_WhenUserExists_ShouldNotThrow() {
+        when(userRepository.findById(1L)).thenReturn(Optional.of(new User()));
+
+        assertDoesNotThrow(() -> userValidator.validateUserExistsById(1L));
+    }
+
+    @Test
+    void validateUserExistsById_WhenUserMissing_ShouldThrow() {
+        when(userRepository.findById(99L)).thenReturn(Optional.empty());
+
+        assertThrows(IllegalArgumentException.class, () -> userValidator.validateUserExistsById(99L));
+    }
+
+    @Test
+    void validateEmailAvailability_WhenAvailable_ShouldNotThrow() {
+        User user = new User();
+        user.setEmail("john@example.com");
+        when(userRepository.findAll()).thenReturn(List.of(user));
+
+        assertDoesNotThrow(() -> userValidator.validateEmailAvailability("jane@example.com"));
+    }
+
+    @Test
+    void validateUserName_WhenBlank_ShouldThrow() {
+        assertThrows(IllegalArgumentException.class, () -> userValidator.validateUserName("  "));
+    }
+
+    @Test
+    void validateUserName_WhenValid_ShouldNotThrow() {
+        assertDoesNotThrow(() -> userValidator.validateUserName("John"));
+    }
+
+    @Test
+    void validateUserEmail_WhenValid_ShouldNotThrow() {
+        assertDoesNotThrow(() -> userValidator.validateUserEmail("john@example.com"));
+    }
 }

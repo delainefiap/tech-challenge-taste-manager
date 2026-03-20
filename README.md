@@ -11,7 +11,6 @@ Esta aplicação segue os princípios da **Clean Architecture**, organizando o c
 - **📁 infrastructure/**: Controllers REST, configurações e implementações técnicas
 - **📁 shared/**: DTOs, mappers, validators e exceptions compartilhados
 
-Para mais detalhes sobre a arquitetura, consulte: [CLEAN_ARCHITECTURE.md](CLEAN_ARCHITECTURE.md)
 
 ## Tecnologias Utilizadas
 

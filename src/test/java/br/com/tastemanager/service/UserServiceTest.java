@@ -125,6 +125,27 @@ class UserServiceTest {
     }
 
     @Test
+    void updateUser_WhenUserTypeChanges_ShouldValidateAndSetType() {
+        User existing = new User();
+        existing.setEmail("old@example.com");
+
+        var request = new br.com.tastemanager.shared.dto.request.UserUpdateRequestDTO();
+        var userType = new br.com.tastemanager.domain.entity.UserType();
+        userType.setId(2L);
+        request.setUserTypeId(userType);
+
+        when(userRepository.findById(1L)).thenReturn(Optional.of(existing));
+        when(userTypeRepository.findById(2L)).thenReturn(Optional.of(userType));
+
+        String response = userService.updateUser(1L, request);
+
+        assertEquals("User updated successfully.", response);
+        assertEquals(userType, existing.getUserTypeId());
+        verify(userTypeValidator).validateUserTypeId(2L);
+        verify(userRepository).save(existing);
+    }
+
+    @Test
     void deleteUser_WhenNotFound_ThrowsUserNotFoundException() {
         when(userRepository.existsById(99L)).thenReturn(false);
 

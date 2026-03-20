@@ -30,5 +30,19 @@ class RestaurantMapperTest {
         assertEquals("Taste", dto.getName());
         assertEquals("Carlos", dto.getOwnerName());
     }
-}
 
+    @Test
+    void toResponseDTO_WhenOwnerIsNull_ShouldNotSetOwnerName() {
+        Restaurant entity = new Restaurant();
+        entity.setName("Taste");
+        entity.setAddress("Rua 1");
+        entity.setTypeKitchen("Italiana");
+        entity.setOpeningHours("10-22");
+        entity.setOwner(null);
+
+        RestaurantResponseDTO dto = restaurantMapper.toResponseDTO(entity);
+
+        assertEquals("Taste", dto.getName());
+        assertEquals(null, dto.getOwnerName());
+    }
+}
