@@ -183,6 +183,8 @@ class UserServiceTest {
         user.setPassword("123");
 
         when(userRepository.findByLogin("john")).thenReturn(Optional.of(user));
+        when(passwordService.isPasswordValid(user.getId(), "123")).thenReturn(true);
+        when(passwordService.isPasswordValid(user.getId(), "wrong")).thenReturn(false);
 
         assertTrue(userService.validateLogin("john", "123"));
         assertFalse(userService.validateLogin("john", "wrong"));

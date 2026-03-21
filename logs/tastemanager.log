@@ -15801,3 +15801,29 @@ java.lang.IllegalStateException: ApplicationContext failure threshold (1) exceed
 	at org.apache.maven.surefire.booter.ForkedBooter.run(ForkedBooter.java:507) ~[surefire-booter-3.1.2.jar:3.1.2]
 	at org.apache.maven.surefire.booter.ForkedBooter.main(ForkedBooter.java:495) ~[surefire-booter-3.1.2.jar:3.1.2]
 
+2026-03-21T01:54:50.536Z  INFO 4317 --- [tastemanager] [main] b.c.t.TastemanagerApplicationTests       : Starting TastemanagerApplicationTests using Java 21.0.10 with PID 4317 (started by runner in /home/runner/work/tech-challenge-taste-manager/tech-challenge-taste-manager)
+2026-03-21T01:54:50.538Z  INFO 4317 --- [tastemanager] [main] b.c.t.TastemanagerApplicationTests       : The following 1 profile is active: "test"
+2026-03-21T01:54:50.589Z DEBUG 4317 --- [tastemanager] [main] o.s.w.c.s.GenericWebApplicationContext   : Refreshing org.springframework.web.context.support.GenericWebApplicationContext@49924fc6
+2026-03-21T01:54:51.317Z  INFO 4317 --- [tastemanager] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-03-21T01:54:51.408Z  INFO 4317 --- [tastemanager] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 80 ms. Found 4 JPA repository interfaces.
+2026-03-21T01:54:51.997Z  INFO 4317 --- [tastemanager] [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-03-21T01:54:52.084Z  INFO 4317 --- [tastemanager] [main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.4.4.Final
+2026-03-21T01:54:52.145Z  INFO 4317 --- [tastemanager] [main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2026-03-21T01:54:52.312Z  INFO 4317 --- [tastemanager] [main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-03-21T01:54:52.381Z  INFO 4317 --- [tastemanager] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-03-21T01:54:52.708Z  INFO 4317 --- [tastemanager] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection conn0: url=jdbc:h2:mem:testdb user=SA
+2026-03-21T01:54:52.711Z  INFO 4317 --- [tastemanager] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-03-21T01:54:52.742Z  WARN 4317 --- [tastemanager] [main] org.hibernate.orm.deprecation            : HHH90000025: H2Dialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-03-21T01:54:53.800Z  INFO 4317 --- [tastemanager] [main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-03-21T01:54:53.891Z  INFO 4317 --- [tastemanager] [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-03-21T01:54:54.298Z  INFO 4317 --- [tastemanager] [main] o.s.d.j.r.query.QueryEnhancerFactory     : Hibernate is in classpath; If applicable, HQL parser will be used.
+2026-03-21T01:54:55.269Z  WARN 4317 --- [tastemanager] [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-03-21T01:54:55.362Z DEBUG 4317 --- [tastemanager] [main] s.w.s.m.m.a.RequestMappingHandlerMapping : 30 mappings in 'requestMappingHandlerMapping'
+2026-03-21T01:54:55.460Z DEBUG 4317 --- [tastemanager] [main] o.s.w.s.handler.SimpleUrlHandlerMapping  : Patterns [/webjars/**, /**, /swagger-ui*/*swagger-initializer.js, /swagger-ui*/**] in 'resourceHandlerMapping'
+2026-03-21T01:54:55.481Z DEBUG 4317 --- [tastemanager] [main] s.w.s.m.m.a.RequestMappingHandlerAdapter : ControllerAdvice beans: 0 @ModelAttribute, 0 @InitBinder, 1 RequestBodyAdvice, 1 ResponseBodyAdvice
+2026-03-21T01:54:55.488Z DEBUG 4317 --- [tastemanager] [main] .m.m.a.ExceptionHandlerExceptionResolver : ControllerAdvice beans: 2 @ExceptionHandler, 1 ResponseBodyAdvice
+2026-03-21T01:54:55.648Z  INFO 4317 --- [tastemanager] [main] b.c.t.TastemanagerApplicationTests       : Started TastemanagerApplicationTests in 5.57 seconds (process running for 12.666)
+2026-03-21T01:54:55.802Z DEBUG 4317 --- [tastemanager] [SpringApplicationShutdownHook] o.s.w.c.s.GenericWebApplicationContext   : Closing org.springframework.web.context.support.GenericWebApplicationContext@49924fc6, started on Sat Mar 21 01:54:50 UTC 2026
+2026-03-21T01:54:55.864Z  INFO 4317 --- [tastemanager] [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-03-21T01:54:55.873Z  INFO 4317 --- [tastemanager] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2026-03-21T01:54:55.874Z  INFO 4317 --- [tastemanager] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.

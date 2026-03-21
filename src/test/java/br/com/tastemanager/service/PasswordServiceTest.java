@@ -7,6 +7,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.util.Optional;
 
@@ -18,6 +19,7 @@ class PasswordServiceTest {
     @Mock
     private UserRepository userRepository;
     private PasswordService passwordService;
+    private final BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 
     @BeforeEach
     void setUp() {
@@ -30,7 +32,7 @@ class PasswordServiceTest {
         Long id = 1L;
         String password = "password123";
         User user = new User();
-        user.setPassword(password);
+        user.setPassword(encoder.encode(password));
 
         when(userRepository.findById(id)).thenReturn(Optional.of(user));
 
@@ -45,7 +47,7 @@ class PasswordServiceTest {
         Long id = 1L;
         String password = "wrongPassword";
         User user = new User();
-        user.setPassword("password123");
+        user.setPassword(encoder.encode("password123"));
 
         when(userRepository.findById(id)).thenReturn(Optional.of(user));
 
