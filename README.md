@@ -92,7 +92,7 @@ Todos os endpoints seguem o padrão REST e estão versionados com `/api/v1/`.
    ```bash
    docker build -t tastemanager-app .
    ```
-3. Suba os containers:
+3. Suba os containers e aplicação:
    ```bash
    docker-compose up --build
    ```

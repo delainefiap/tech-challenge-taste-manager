@@ -3,10 +3,10 @@ INSERT INTO user_types (name, description) VALUES ('CLIENTE', 'Usuário que pode
 INSERT INTO user_types (name, description) VALUES ('DONO_RESTAURANTE', 'Usuário responsável pela gestão de um ou mais restaurantes');
 
 -- users
-INSERT INTO users (name, email, login, password, created_at, last_update, user_type_id, address) VALUES ('João Silva', 'joao.silva@email.com', 'joaosilva', 'senha123', NOW(), NOW(), 1, 'Rua A, 123');
-INSERT INTO users (name, email, login, password, created_at, last_update, user_type_id, address) VALUES ('Maria Oliveira', 'maria.oliveira@email.com', 'mariaoliveira', 'senha456', NOW(), NOW(), 2, 'Rua B, 456');
-INSERT INTO users (name, email, login, password, created_at, last_update, user_type_id, address) VALUES ('Carlos Souza', 'carlos.souza@email.com', 'carlossouza', 'senha789', NOW(), NOW(), 1, 'Rua C, 789');
-INSERT INTO users (name, email, login, password, created_at, last_update, user_type_id, address) VALUES ('Delaine Silva', 'delaine@email.com', 'delaine', 'senha456', NOW(), NOW(), 2, 'Rua D, 111');
+INSERT INTO users (name, email, login, password, created_at, last_update, user_type_id, address) VALUES ('João Silva', 'joao.silva@email.com', 'joaosilva', '$2a$12$Ixa4t6E3o6owd03V3dVTlO0qxZSy4t1/p9fseXxfU6zYBHd4aGkBK', NOW(), NOW(), 1, 'Rua A, 123');
+INSERT INTO users (name, email, login, password, created_at, last_update, user_type_id, address) VALUES ('Maria Oliveira', 'maria.oliveira@email.com', 'mariaoliveira', '$2a$12$QDFXgFJ/4NtHu3RbOFP7xeOK0e.GBDvaeJIKCdt2NzD49eA02/5R2', NOW(), NOW(), 2, 'Rua B, 456');
+INSERT INTO users (name, email, login, password, created_at, last_update, user_type_id, address) VALUES ('Carlos Souza', 'carlos.souza@email.com', 'carlossouza', '$2a$12$MbYCSPWuExE1l4bRZvc0repEfWanPMkJycboFXyg5yGJV7McaF7z2', NOW(), NOW(), 1, 'Rua C, 789');
+INSERT INTO users (name, email, login, password, created_at, last_update, user_type_id, address) VALUES ('Delaine Silva', 'delaine@email.com', 'delaine', '$2a$12$QDFXgFJ/4NtHu3RbOFP7xeOK0e.GBDvaeJIKCdt2NzD49eA02/5R2', NOW(), NOW(), 2, 'Rua D, 111');
 
 -- restaurants
 INSERT INTO restaurants (name, address, type_kitchen, opening_hours, owner_id) VALUES ('Restaurante Brasil', 'Av. Central, 100', 'Brasileira', '08:00-22:00', 2);

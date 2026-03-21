@@ -53,7 +53,8 @@ public class UserService {
         User user = userMapper.UserRequestDtoToEntity(userRequest);
         user.setCreatedAt(new Date());
         user.setLastUpdate(user.getCreatedAt());
-        
+        // Hash da senha
+        user.setPassword(passwordService.hashPassword(user.getPassword()));
         if (userTypeId != null) {
             UserType userType = userTypeRepository.findById(userTypeId)
                     .orElseThrow(() -> new IllegalArgumentException("UserType not found"));
@@ -113,19 +114,19 @@ public class UserService {
     public void updatePassword(Long id, ChangePasswordRequestDTO changePasswordRequestDTO) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException("User not found"));
-        
-        if (!user.getPassword().equals(changePasswordRequestDTO.getOldPassword())) {
+        // Validação segura da senha antiga
+        if (!passwordService.isPasswordValid(id, changePasswordRequestDTO.getOldPassword())) {
              throw new IllegalArgumentException("Invalid old password");
         }
-
-        user.setPassword(changePasswordRequestDTO.getNewPassword());
+        // Hash da nova senha
+        user.setPassword(passwordService.hashPassword(changePasswordRequestDTO.getNewPassword()));
         user.setLastUpdate(new Date());
         userRepository.save(user);
     }
 
     public boolean validateLogin(String login, String password) {
         Optional<User> user = userRepository.findByLogin(login);
-        return user.isPresent() && user.get().getPassword().equals(password);
+        return user.isPresent() && passwordService.isPasswordValid(user.get().getId(), password);
     }
 
     public List<UserResponseDTO> findAllUsers(int page, int size) {
