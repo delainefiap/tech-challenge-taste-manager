@@ -1,10 +1,11 @@
 package br.com.tastemanager.mapper;
 
-import br.com.tastemanager.dto.request.UserRequestDTO;
-import br.com.tastemanager.dto.request.UserUpdateRequestDTO;
-import br.com.tastemanager.dto.response.UserResponseDTO;
-import br.com.tastemanager.entity.User;
-import br.com.tastemanager.entity.UserType;
+import br.com.tastemanager.shared.dto.request.UserRequestDTO;
+import br.com.tastemanager.shared.dto.request.UserUpdateRequestDTO;
+import br.com.tastemanager.shared.dto.response.UserResponseDTO;
+import br.com.tastemanager.domain.entity.User;
+import br.com.tastemanager.domain.entity.UserType;
+import br.com.tastemanager.shared.mapper.UserMapper;
 import org.junit.jupiter.api.Test;
 import org.mapstruct.factory.Mappers;
 
@@ -36,10 +37,10 @@ class UserMapperTest {
         assertEquals("john.doe@example.com", user.getEmail());
         assertEquals("johndoe", user.getLogin());
         assertEquals("password123", user.getPassword());
-        assertNotNull(user.getUserTypeId());
-        assertEquals(1L, user.getUserTypeId().getId());
-        assertEquals("Admin", user.getUserTypeId().getName());
+        assertNull(user.getUserTypeId());
         assertEquals("123 Main St", user.getAddress());
+        assertNull(user.getCreatedAt());
+        assertNull(user.getLastUpdate());
     }
 
     @Test
@@ -77,5 +78,12 @@ class UserMapperTest {
         assertEquals("123 Main St", dto.getAddress());
         assertNotNull(dto.getUserTypeId());
         assertEquals("Customer", dto.getUserTypeId().getName());
+    }
+
+    @Test
+    void userUpdateRequestDtoToEntity_WhenNull_ShouldReturnNull() {
+        User user = userMapper.userUpdateRequestDtoToEntity(null);
+
+        assertNull(user);
     }
 }

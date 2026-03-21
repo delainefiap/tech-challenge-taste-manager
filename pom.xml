@@ -16,6 +16,9 @@
 
 	<properties>
 		<java.version>21</java.version>
+		<maven.surefire.plugin.version>3.2.5</maven.surefire.plugin.version>
+		<maven.failsafe.plugin.version>3.2.5</maven.failsafe.plugin.version>
+		<jacoco.plugin.version>0.8.12</jacoco.plugin.version>
 	</properties>
 
 	<dependencies>
@@ -42,12 +45,11 @@
 		<dependency>
 			<groupId>com.h2database</groupId>
 			<artifactId>h2</artifactId>
-			<scope>runtime</scope>
+			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.mysql</groupId>
 			<artifactId>mysql-connector-j</artifactId>
-			<version>8.0.33</version>
 			<scope>runtime</scope>
 		</dependency>
 
@@ -55,25 +57,7 @@
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
-			<version>1.18.28</version>
 			<scope>provided</scope>
-		</dependency>
-
-		<!-- Validation -->
-		<dependency>
-			<groupId>javax.validation</groupId>
-			<artifactId>validation-api</artifactId>
-			<version>2.0.1.Final</version>
-		</dependency>
-		<dependency>
-			<groupId>org.hibernate.validator</groupId>
-			<artifactId>hibernate-validator</artifactId>
-			<version>8.0.0.Final</version>
-		</dependency>
-		<dependency>
-			<groupId>org.glassfish</groupId>
-			<artifactId>jakarta.el</artifactId>
-			<version>4.0.2</version>
 		</dependency>
 
 		<!-- MapStruct -->
@@ -103,8 +87,11 @@
 		<dependency>
 			<groupId>org.mockito</groupId>
 			<artifactId>mockito-core</artifactId>
-			<version>5.5.0</version>
 			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-crypto</artifactId>
 		</dependency>
 	</dependencies>
 	<repositories>
@@ -130,7 +117,8 @@
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>3.11.0</version>
 				<configuration>
-					<release>21</release> <!-- Em vez de source e target -->
+					<forceJavacCompilerUse>true</forceJavacCompilerUse>
+					<release>21</release>
 					<encoding>UTF-8</encoding>
 					<annotationProcessorPaths>
 						<path>
@@ -141,12 +129,111 @@
 						<path>
 							<groupId>org.projectlombok</groupId>
 							<artifactId>lombok</artifactId>
-							<version>1.18.28</version>
+							<version>1.18.30</version>
+						</path>
+						<path>
+							<groupId>org.projectlombok</groupId>
+							<artifactId>lombok-mapstruct-binding</artifactId>
+							<version>0.2.0</version>
 						</path>
 					</annotationProcessorPaths>
 				</configuration>
 			</plugin>
 
+
+			<!-- Unit tests only (*Test) -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>${maven.surefire.plugin.version}</version>
+				<configuration>
+					<argLine>@{argLine}</argLine>
+					<excludes>
+						<exclude>**/*IT.java</exclude>
+					</excludes>
+				</configuration>
+			</plugin>
+
+			<!-- Integration tests only (*IT) -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-failsafe-plugin</artifactId>
+				<version>${maven.failsafe.plugin.version}</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>integration-test</goal>
+							<goal>verify</goal>
+						</goals>
+						<configuration>
+							<includes>
+								<include>**/*IT.java</include>
+							</includes>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+
+			<!-- Enforce >=80% line coverage in unit tests -->
+			<plugin>
+				<groupId>org.jacoco</groupId>
+				<artifactId>jacoco-maven-plugin</artifactId>
+				<version>${jacoco.plugin.version}</version>
+				<executions>
+					<execution>
+						<id>prepare-unit-agent</id>
+						<goals>
+							<goal>prepare-agent</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>jacoco-report</id>
+						<phase>verify</phase>
+						<goals>
+							<goal>report</goal>
+						</goals>
+						<configuration>
+							<excludes>
+								<exclude>**/domain/entity/**</exclude>
+								<exclude>**/domain/model/**</exclude>
+								<exclude>**/shared/dto/**</exclude>
+								<exclude>**/infrastructure/config/**</exclude>
+								<exclude>**/infrastructure/controller/openapi/**</exclude>
+								<exclude>**/TastemanagerApplication*</exclude>
+							</excludes>
+						</configuration>
+					</execution>
+					<execution>
+						<id>jacoco-check</id>
+						<phase>verify</phase>
+						<goals>
+							<goal>check</goal>
+						</goals>
+						<configuration>
+							<excludes>
+								<exclude>**/domain/entity/**</exclude>
+								<exclude>**/domain/model/**</exclude>
+								<exclude>**/shared/dto/**</exclude>
+								<exclude>**/infrastructure/config/**</exclude>
+								<exclude>**/infrastructure/controller/openapi/**</exclude>
+								<exclude>**/TastemanagerApplication*</exclude>
+							</excludes>
+							<rules>
+								<rule>
+									<element>BUNDLE</element>
+									<limits>
+										<limit>
+											<counter>LINE</counter>
+											<value>COVEREDRATIO</value>
+											<minimum>0.80</minimum>
+										</limit>
+									</limits>
+								</rule>
+							</rules>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
 
 			<!-- Resources Plugin -->
 			<plugin>

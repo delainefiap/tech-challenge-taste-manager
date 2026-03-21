@@ -1,0 +1,95 @@
+name: CI - Tests & JaCoCo Report
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+permissions:
+  contents: read
+  pull-requests: write
+  issues: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+
+      - name: Cache Maven local repository
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.m2/repository
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-m2-
+
+      - name: Build & run unit tests and generate JaCoCo report
+        # We skip integration tests to avoid external DB requirements on PRs
+        run: mvn -B -DskipITs=true clean test jacoco:report
+
+      - name: Upload JaCoCo HTML report as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: jacoco-report
+          path: target/site/jacoco
+
+      - name: Generate coverage summary (markdown)
+        run: |
+          python3 - <<'PY'
+          import xml.etree.ElementTree as ET
+          tree = ET.parse('target/site/jacoco/jacoco.xml')
+          root = tree.getroot()
+          def get_counter(elem, type_name):
+              for c in elem.findall('counter'):
+                  if c.attrib.get('type') == type_name:
+                      missed = int(c.attrib.get('missed'))
+                      covered = int(c.attrib.get('covered'))
+                      total = missed + covered
+                      pct = (covered / total * 100) if total > 0 else 100.0
+                      return missed, covered, total, round(pct, 1)
+              return 0,0,0,100.0
+
+          missed_l, covered_l, total_l, pct_l = get_counter(root, 'LINE')
+          missed_i, covered_i, total_i, pct_i = get_counter(root, 'INSTRUCTION')
+          missed_b, covered_b, total_b, pct_b = get_counter(root, 'BRANCH')
+          missed_m, covered_m, total_m, pct_m = get_counter(root, 'METHOD')
+
+          md = []
+          md.append('# JaCoCo coverage summary')
+          md.append('')
+          md.append(f'- **Lines:** {pct_l}% ({covered_l}/{total_l})')
+          md.append(f'- **Instructions:** {pct_i}% ({covered_i}/{total_i})')
+          md.append(f'- **Branches:** {pct_b}% ({covered_b}/{total_b})')
+          md.append(f'- **Methods:** {pct_m}% ({covered_m}/{total_m})')
+          md.append('')
+          md.append('Full HTML report uploaded to workflow artifacts as `jacoco-report`.')
+
+          with open('coverage-summary.md','w') as f:
+              f.write('\n'.join(md))
+          print('\n'.join(md))
+          PY
+
+      - name: Post coverage summary as PR comment
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const fs = require('fs');
+            const body = fs.readFileSync('coverage-summary.md','utf8');
+            const prNumber = context.payload.pull_request.number;
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: prNumber,
+              body: body
+            });
+

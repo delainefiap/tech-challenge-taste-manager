@@ -1,7 +1,8 @@
 package br.com.tastemanager.service;
 
-import br.com.tastemanager.entity.User;
-import br.com.tastemanager.repository.UserRepository;
+import br.com.tastemanager.application.service.PasswordService;
+import br.com.tastemanager.domain.entity.User;
+import br.com.tastemanager.domain.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
@@ -29,7 +30,7 @@ class PasswordServiceTest {
         Long id = 1L;
         String password = "password123";
         User user = new User();
-        user.setPassword(password);
+        user.setPassword(passwordService.hashPassword(password));
 
         when(userRepository.findById(id)).thenReturn(Optional.of(user));
 
@@ -44,7 +45,7 @@ class PasswordServiceTest {
         Long id = 1L;
         String password = "wrongPassword";
         User user = new User();
-        user.setPassword("password123");
+        user.setPassword(passwordService.hashPassword("password123"));
 
         when(userRepository.findById(id)).thenReturn(Optional.of(user));
 
@@ -57,7 +58,7 @@ class PasswordServiceTest {
     @Test
     void testIsPasswordValid_WhenUserNotFound() {
         Long id = 1L;
-        String password = "password123";
+        String password = "$2a$12$fxnFVb41W3NoQWTTHCQzaukQ0anIu2VQvJdiyrYWE37Eaz9GbOMkW";
 
         when(userRepository.findById(id)).thenReturn(Optional.empty());
 
