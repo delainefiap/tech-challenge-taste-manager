@@ -53,7 +53,7 @@ public class UserService {
         User user = userMapper.UserRequestDtoToEntity(userRequest);
         user.setCreatedAt(new Date());
         user.setLastUpdate(user.getCreatedAt());
-        // Hash da senha
+
         user.setPassword(passwordService.hashPassword(user.getPassword()));
         if (userTypeId != null) {
             UserType userType = userTypeRepository.findById(userTypeId)
@@ -114,11 +114,11 @@ public class UserService {
     public void updatePassword(Long id, ChangePasswordRequestDTO changePasswordRequestDTO) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException("User not found"));
-        // Validação segura da senha antiga
+
         if (!passwordService.isPasswordValid(id, changePasswordRequestDTO.getOldPassword())) {
              throw new IllegalArgumentException("Invalid old password");
         }
-        // Hash da nova senha
+
         user.setPassword(passwordService.hashPassword(changePasswordRequestDTO.getNewPassword()));
         user.setLastUpdate(new Date());
         userRepository.save(user);

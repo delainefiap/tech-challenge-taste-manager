@@ -1,6 +1,5 @@
 package br.com.tastemanager.shared.dto.request;
 
-
 import br.com.tastemanager.domain.entity.UserType;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonProperty;

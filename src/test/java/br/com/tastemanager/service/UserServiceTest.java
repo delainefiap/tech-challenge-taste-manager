@@ -180,9 +180,10 @@ class UserServiceTest {
     @Test
     void validateLogin_ReturnsTrueOnlyForMatchingUserAndPassword() {
         User user = new User();
-        user.setPassword("123");
-
+        user.setPassword("$2a$10$hashfakestring"); // valor irrelevante, pois será mockado
         when(userRepository.findByLogin("john")).thenReturn(Optional.of(user));
+        when(passwordService.isPasswordValid(user.getId(), "123")).thenReturn(true);
+        when(passwordService.isPasswordValid(user.getId(), "wrong")).thenReturn(false);
 
         assertTrue(userService.validateLogin("john", "123"));
         assertFalse(userService.validateLogin("john", "wrong"));

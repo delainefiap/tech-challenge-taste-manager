@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 @Schema(description = "DTO para criação de um novo usuário no sistema")
 public class UserRequestDTO {
@@ -28,6 +29,7 @@ public class UserRequestDTO {
     private String password;
 
     @JsonProperty("userTypeId")
+    @NotNull(message = "User type id is mandatory.")
     private UserType userTypeId;
 
     @JsonProperty("address")

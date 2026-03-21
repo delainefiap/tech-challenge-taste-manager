@@ -1,11 +1,9 @@
 package br.com.tastemanager.shared.mapper;
 
 import br.com.tastemanager.domain.entity.User;
-
 import br.com.tastemanager.shared.dto.request.UserRequestDTO;
 import br.com.tastemanager.shared.dto.request.UserUpdateRequestDTO;
 import br.com.tastemanager.shared.dto.response.UserResponseDTO;
-import br.com.tastemanager.shared.dto.response.UserTypeIdResponseDTO;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.ReportingPolicy;
@@ -39,5 +37,4 @@ public interface UserMapper {
     @Mapping(target = "address", source = "address")
     @Mapping(target = "lastUpdate", source = "lastUpdate")
     UserResponseDTO userToUserResponseDto(User user);
-
 }

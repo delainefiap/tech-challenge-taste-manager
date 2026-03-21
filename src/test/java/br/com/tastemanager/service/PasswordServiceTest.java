@@ -30,7 +30,7 @@ class PasswordServiceTest {
         Long id = 1L;
         String password = "password123";
         User user = new User();
-        user.setPassword(password);
+        user.setPassword(passwordService.hashPassword(password));
 
         when(userRepository.findById(id)).thenReturn(Optional.of(user));
 
@@ -45,7 +45,7 @@ class PasswordServiceTest {
         Long id = 1L;
         String password = "wrongPassword";
         User user = new User();
-        user.setPassword("password123");
+        user.setPassword(passwordService.hashPassword("password123"));
 
         when(userRepository.findById(id)).thenReturn(Optional.of(user));
 
@@ -58,7 +58,7 @@ class PasswordServiceTest {
     @Test
     void testIsPasswordValid_WhenUserNotFound() {
         Long id = 1L;
-        String password = "password123";
+        String password = "$2a$12$fxnFVb41W3NoQWTTHCQzaukQ0anIu2VQvJdiyrYWE37Eaz9GbOMkW";
 
         when(userRepository.findById(id)).thenReturn(Optional.empty());
 
