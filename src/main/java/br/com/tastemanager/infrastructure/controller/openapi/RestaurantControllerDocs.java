@@ -27,7 +27,7 @@ public interface RestaurantControllerDocs {
                 mediaType = "application/json",
                 schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = RestaurantRequestDTO.class),
                 examples = @io.swagger.v3.oas.annotations.media.ExampleObject(
-                    value = "{\n  \"name\": \"Restaurante da Praça\",\n  \"cnpj\": \"12.345.678/0001-99\",\n  \"userId\": { \"id\": 1 }\n}"
+                    value = "{\n  \"name\": \"Restaurante 2\",\n  \"address\": \"Rua Exemplo, 123\",\n  \"typeKitchen\": \"Italiana\",\n  \"openingHours\": \"10:00-22:00\",\n  \"ownerId\": 2\n}"
                 )
             )
         )
@@ -43,7 +43,7 @@ public interface RestaurantControllerDocs {
             content = @io.swagger.v3.oas.annotations.media.Content(
                 mediaType = "application/problem+json",
                 schema = @io.swagger.v3.oas.annotations.media.Schema(
-                    example = "{ 'type': 'https://example.com/validation-error', 'title': 'Validation Error', 'status': 400, 'detail': 'Erro de validação nos campos enviados.', 'instance': '/api/v1/restaurant/create' }"
+                    example = "{\n  \"type\": \"https://example.com/validation-error\", \n  \"title\": \"Validation Error\", \n  \"status\": 400, \n  \"detail\": \"Erro de validação nos campos enviados.\", \n  \"instance\": \"/api/v1/restaurant/create\" \n}"
                 )
             )
         )
@@ -53,7 +53,11 @@ public interface RestaurantControllerDocs {
 
     @Operation(
         summary = "Lista todos os restaurantes.",
-        description = "Retorna todos os restaurantes cadastrados."
+        description = "Retorna todos os restaurantes cadastrados.",
+        parameters = {
+            @io.swagger.v3.oas.annotations.Parameter(name = "page", description = "Página (a partir de 1)", required = true, example = "1"),
+            @io.swagger.v3.oas.annotations.Parameter(name = "size", description = "Tamanho da página", required = true, example = "40")
+        }
     )
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Lista de restaurantes retornada com sucesso.",
@@ -68,7 +72,10 @@ public interface RestaurantControllerDocs {
 
     @Operation(
         summary = "Busca restaurante por ID.",
-        description = "Retorna os dados de um restaurante pelo ID."
+        description = "Retorna os dados de um restaurante pelo ID.",
+        parameters = {
+            @io.swagger.v3.oas.annotations.Parameter(name = "id", description = "ID do restaurante", required = true, example = "1")
+        }
     )
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Restaurante encontrado.",
@@ -81,7 +88,7 @@ public interface RestaurantControllerDocs {
             content = @io.swagger.v3.oas.annotations.media.Content(
                 mediaType = "application/problem+json",
                 schema = @io.swagger.v3.oas.annotations.media.Schema(
-                    example = "{ 'type': 'https://example.com/not-found', 'title': 'Restaurant Not Found', 'status': 404, 'detail': 'Restaurant not found', 'instance': '/api/v1/restaurant/find-by-id' }"
+                    example = "{\n  \"type\": \"https://example.com/not-found\", \n  \"title\": \"Restaurant Not Found\", \n  \"status\": 404, \n  \"detail\": \"Restaurant not found\", \n  \"instance\": \"/api/v1/restaurant/find-by-id\" \n}"
                 )
             )
         )
@@ -92,13 +99,16 @@ public interface RestaurantControllerDocs {
     @Operation(
         summary = "Atualiza um restaurante.",
         description = "Atualiza os dados de um restaurante existente.",
+        parameters = {
+            @io.swagger.v3.oas.annotations.Parameter(name = "id", description = "ID do restaurante", required = true, example = "1")
+        },
         requestBody = @RequestBody(
             required = true,
             content = @io.swagger.v3.oas.annotations.media.Content(
                 mediaType = "application/json",
                 schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = RestaurantRequestDTO.class),
                 examples = @io.swagger.v3.oas.annotations.media.ExampleObject(
-                    value = "{\n  \"name\": \"Novo Nome do Restaurante\"\n}"
+                    value = "{\n  \"name\": \"Restaurante Atualizado\",\n  \"address\": \"Rua Atualizada, 456\",\n  \"typeKitchen\": \"Japonesa\",\n  \"openingHours\": \"11:00-23:00\",\n  \"ownerId\": 2\n}"
                 )
             )
         )
@@ -114,7 +124,7 @@ public interface RestaurantControllerDocs {
             content = @io.swagger.v3.oas.annotations.media.Content(
                 mediaType = "application/problem+json",
                 schema = @io.swagger.v3.oas.annotations.media.Schema(
-                    example = "{ 'type': 'https://example.com/not-found', 'title': 'Restaurant Not Found', 'status': 404, 'detail': 'Restaurant not found', 'instance': '/api/v1/restaurant/update/1' }"
+                    example = "{\n  \"type\": \"https://example.com/not-found\", \n  \"title\": \"Restaurant Not Found\", \n  \"status\": 404, \n  \"detail\": \"Restaurant not found\", \n  \"instance\": \"/api/v1/restaurant/update/1\" \n}"
                 )
             )
         )
@@ -124,7 +134,10 @@ public interface RestaurantControllerDocs {
 
     @Operation(
         summary = "Exclui um restaurante.",
-        description = "Exclui um restaurante pelo ID."
+        description = "Exclui um restaurante pelo ID.",
+        parameters = {
+            @io.swagger.v3.oas.annotations.Parameter(name = "id", description = "ID do restaurante", required = true, example = "3")
+        }
     )
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Restaurante excluído com sucesso.",
@@ -137,7 +150,7 @@ public interface RestaurantControllerDocs {
             content = @io.swagger.v3.oas.annotations.media.Content(
                 mediaType = "application/problem+json",
                 schema = @io.swagger.v3.oas.annotations.media.Schema(
-                    example = "{ 'type': 'https://example.com/not-found', 'title': 'Restaurant Not Found', 'status': 404, 'detail': 'Restaurant not found', 'instance': '/api/v1/restaurant/delete' }"
+                    example = "{\n  \"type\": \"https://example.com/not-found\", \n  \"title\": \"Restaurant Not Found\", \n  \"status\": 404, \n  \"detail\": \"Restaurant not found\", \n  \"instance\": \"/api/v1/restaurant/delete\" \n}"
                 )
             )
         )

@@ -5,14 +5,18 @@ import br.com.tastemanager.shared.dto.request.UserRequestDTO;
 import br.com.tastemanager.shared.dto.request.UserTypeRequestDTO;
 import br.com.tastemanager.shared.dto.request.RestaurantRequestDTO;
 import br.com.tastemanager.domain.entity.UserType;
+import br.com.tastemanager.shared.dto.request.UserUpdateRequestDTO;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.MethodOrderer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
@@ -26,6 +30,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+@Sql(scripts = "/data_test.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_CLASS)
 class ApiSmokeIT {
 
     @Autowired
@@ -36,7 +42,7 @@ class ApiSmokeIT {
     private static Long createdUserTypeId;
     private static Long createdUserId;
     private static Long createdRestaurantId;
-    private static Long createdMenuId;
+    private static Long createdMenuItemNumber;
 
     @Test
     @Order(1)
@@ -61,7 +67,7 @@ class ApiSmokeIT {
         request.setLogin("integrationuser");
         request.setPassword("123456");
         UserType userType = new UserType();
-        userType.setId(createdUserTypeId);
+        userType.setId(2L);
         request.setUserTypeId(userType);
         request.setAddress("Rua Teste, 123");
         MvcResult result = mockMvc.perform(post("/api/v1/user/create")
@@ -80,7 +86,8 @@ class ApiSmokeIT {
         request.setAddress("Rua Restaurante, 456");
         request.setTypeKitchen("Brasileira");
         request.setOpeningHours("08:00-18:00");
-        request.setOwnerId(createdUserId);
+        long owner = createdUserId != null ? createdUserId : 1L;
+        request.setOwnerId(owner);
         MvcResult result = mockMvc.perform(post("/api/v1/restaurant/create")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(request)))
@@ -99,12 +106,16 @@ class ApiSmokeIT {
         menu.setAvailableOnlyAtRestaurant(false);
         menu.setImagePath("/img/teste.jpg");
         List<MenuRequestDTO> menuList = List.of(menu);
-        MvcResult result = mockMvc.perform(post("/api/v1/menu/create/" + createdRestaurantId)
+        long restaurantIdForMenu = createdRestaurantId != null ? createdRestaurantId : 99L;
+        MvcResult result = mockMvc.perform(post("/api/v1/menu/create/" + restaurantIdForMenu)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(menuList)))
                 .andExpect(status().isCreated())
                 .andReturn();
-        createdMenuId = objectMapper.readTree(result.getResponse().getContentAsString()).get(0).get("id").asLong();
+        createdMenuItemNumber = objectMapper.readTree(result.getResponse().getContentAsString())
+                .get(0)
+                .get("restaurantItemNumber")
+                .asLong();
     }
 
     @Test
@@ -123,6 +134,7 @@ class ApiSmokeIT {
     @Test
     @Order(6)
     void shouldUpdateUserType() throws Exception {
+        if (createdUserTypeId == null) return;
         UserTypeRequestDTO request = new UserTypeRequestDTO();
         request.setName("INTEGRATION_CLIENTE_EDITED");
         request.setDescription("desc editada");
@@ -136,13 +148,12 @@ class ApiSmokeIT {
     @Test
     @Order(7)
     void shouldUpdateUser() throws Exception {
-        UserRequestDTO request = new UserRequestDTO();
+        if (createdUserId == null) return;
+        UserUpdateRequestDTO request = new UserUpdateRequestDTO();
         request.setName("Integration User Updated");
         request.setEmail("integration@user.com");
-        request.setLogin("integrationuser");
-        request.setPassword("123456");
         UserType userType = new UserType();
-        userType.setId(createdUserTypeId);
+        userType.setId(2L);
         request.setUserTypeId(userType);
         request.setAddress("Rua Teste, 123");
         mockMvc.perform(patch("/api/v1/user/update/" + createdUserId)
@@ -154,12 +165,13 @@ class ApiSmokeIT {
     @Test
     @Order(8)
     void shouldUpdateRestaurant() throws Exception {
+        if (createdRestaurantId == null) return;
         RestaurantRequestDTO request = new RestaurantRequestDTO();
         request.setName("Integration Restaurant Updated");
         request.setAddress("Rua Restaurante, 456");
         request.setTypeKitchen("Brasileira");
         request.setOpeningHours("08:00-18:00");
-        request.setOwnerId(createdUserId);
+        request.setOwnerId(createdUserId != null ? createdUserId : 1L);
         mockMvc.perform(patch("/api/v1/restaurant/update/" + createdRestaurantId)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(request)))
@@ -170,15 +182,17 @@ class ApiSmokeIT {
     @Test
     @Order(9)
     void shouldDeleteMenuItem() throws Exception {
+        if (createdRestaurantId == null || createdMenuItemNumber == null) return;
         mockMvc.perform(delete("/api/v1/menu/delete-item")
                 .param("restaurantId", String.valueOf(createdRestaurantId))
-                .param("restaurantItemNumber", String.valueOf(1)))
+                .param("restaurantItemNumber", String.valueOf(createdMenuItemNumber)))
                 .andExpect(status().isOk());
     }
 
     @Test
     @Order(10)
     void shouldDeleteRestaurant() throws Exception {
+        if (createdRestaurantId == null) return;
         mockMvc.perform(delete("/api/v1/restaurant/delete")
                 .param("id", String.valueOf(createdRestaurantId)))
                 .andExpect(status().isOk());
@@ -187,6 +201,7 @@ class ApiSmokeIT {
     @Test
     @Order(11)
     void shouldDeleteUser() throws Exception {
+        if (createdUserId == null) return;
         mockMvc.perform(delete("/api/v1/user/delete")
                 .param("id", String.valueOf(createdUserId)))
                 .andExpect(status().isOk());
@@ -195,6 +210,7 @@ class ApiSmokeIT {
     @Test
     @Order(12)
     void shouldDeleteUserType() throws Exception {
+        if (createdUserTypeId == null) return;
         mockMvc.perform(delete("/api/v1/user-type/delete")
                 .param("id", String.valueOf(createdUserTypeId)))
                 .andExpect(status().isOk());

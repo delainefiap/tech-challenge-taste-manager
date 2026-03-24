@@ -27,7 +27,7 @@ public interface UserTypeControllerDocs {
                 mediaType = "application/json",
                 schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = UserTypeRequestDTO.class),
                 examples = @io.swagger.v3.oas.annotations.media.ExampleObject(
-                    value = "{\n  \"name\": \"CLIENTE\"\n}"
+                    value = "{\n  \"name\": \"ADMIN\",\n  \"description\": \"Pessoa admin\"\n}"
                 )
             )
         )
@@ -38,7 +38,7 @@ public interface UserTypeControllerDocs {
                 mediaType = "application/json",
                 schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = UserTypeResponseDTO.class),
                 examples = @io.swagger.v3.oas.annotations.media.ExampleObject(
-                    value = "{ 'id': 1, 'name': 'cliente' }"
+                    value = "{\n  \"id\": 1, \n  \"name\": \"CLIENTE\", \n  \"description\": \"Usuário do tipo cliente\"\n}"
                 )
             )
         ),
@@ -46,7 +46,7 @@ public interface UserTypeControllerDocs {
             content = @io.swagger.v3.oas.annotations.media.Content(
                 mediaType = "application/problem+json",
                 schema = @io.swagger.v3.oas.annotations.media.Schema(
-                    example = "{ 'type': 'https://example.com/validation-error', 'title': 'Validation Error', 'status': 400, 'detail': 'Nome já existe ou inválido.', 'instance': '/api/v1/user-type/create' }"
+                    example = "{\n  \"type\": \"https://example.com/validation-error\",\n  \"title\": \"Validation Error\",\n  \"status\": 400,\n  \"detail\": \"Nome já existe ou inválido.\",\n  \"instance\": \"/api/v1/user-type/create\"\n}"
                 )
             )
         )
@@ -57,13 +57,16 @@ public interface UserTypeControllerDocs {
     @Operation(
         summary = "Atualiza um tipo de usuário existente.",
         description = "Endpoint para atualizar um tipo de usuário pelo ID.",
+        parameters = {
+            @io.swagger.v3.oas.annotations.Parameter(name = "id", description = "ID do tipo de usuário", required = true, example = "2")
+        },
         requestBody = @RequestBody(
             required = true,
             content = @io.swagger.v3.oas.annotations.media.Content(
                 mediaType = "application/json",
                 schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = UserTypeRequestDTO.class),
                 examples = @io.swagger.v3.oas.annotations.media.ExampleObject(
-                    value = "{\n  \"name\": \"DONO_RESTAURANTE\"\n}"
+                    value = "{\n  \"name\": \"DONO_RESTAURANTE\",\n  \"description\": \"Proprietário de restaurante\"\n}"
                 )
             )
         )
@@ -74,7 +77,7 @@ public interface UserTypeControllerDocs {
                 mediaType = "application/json",
                 schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = UserTypeResponseDTO.class),
                 examples = @io.swagger.v3.oas.annotations.media.ExampleObject(
-                    value = "{ 'id': 2, 'name': 'dono_restaurante' }"
+                    value = "{\n  \"id\": 2, \n  \"name\": \"DONO_RESTAURANTE\", \n  \"description\": \"Proprietário de restaurante\"\n}"
                 )
             )
         ),
@@ -82,7 +85,7 @@ public interface UserTypeControllerDocs {
             content = @io.swagger.v3.oas.annotations.media.Content(
                 mediaType = "application/problem+json",
                 schema = @io.swagger.v3.oas.annotations.media.Schema(
-                    example = "{ 'type': 'https://example.com/not-found', 'title': 'UserType Not Found', 'status': 404, 'detail': 'Tipo de usuário não encontrado.', 'instance': '/api/v1/user-type/update/{id}' }"
+                    example = "{\n  \"type\": \"https://example.com/not-found\",\n  \"title\": \"UserType Not Found\",\n  \"status\": 404,\n  \"detail\": \"Tipo de usuário não encontrado.\",\n  \"instance\": \"/api/v1/user-type/update/{id}\"\n}"
                 )
             )
         )
@@ -105,7 +108,7 @@ public interface UserTypeControllerDocs {
             content = @io.swagger.v3.oas.annotations.media.Content(
                 mediaType = "application/problem+json",
                 schema = @io.swagger.v3.oas.annotations.media.Schema(
-                    example = "{ 'type': 'https://example.com/not-found', 'title': 'UserType Not Found', 'status': 404, 'detail': 'Tipo de usuário não encontrado.', 'instance': '/api/v1/user-type/delete' }"
+                    example = "{\n  \"type\": \"https://example.com/not-found\",\n  \"title\": \"UserType Not Found\",\n  \"status\": 404,\n  \"detail\": \"Tipo de usuário não encontrado.\",\n  \"instance\": \"/api/v1/user-type/delete\"\n}"
                 )
             )
         )
@@ -115,15 +118,19 @@ public interface UserTypeControllerDocs {
 
     @Operation(
         summary = "Busca todos os tipos de usuário.",
-        description = "Retorna uma lista paginada de todos os tipos de usuário cadastrados."
+        description = "Retorna uma lista paginada de todos os tipos de usuário cadastrados.",
+        parameters = {
+            @io.swagger.v3.oas.annotations.Parameter(name = "page", description = "Página (a partir de 1)", required = true, example = "1"),
+            @io.swagger.v3.oas.annotations.Parameter(name = "size", description = "Tamanho da página", required = true, example = "40")
+        }
     )
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Lista de tipos de usuário encontrada.",
             content = @io.swagger.v3.oas.annotations.media.Content(
                 mediaType = "application/json",
-                schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = UserTypeResponseDTO.class),
+                array = @io.swagger.v3.oas.annotations.media.ArraySchema(schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = UserTypeResponseDTO.class)),
                 examples = @io.swagger.v3.oas.annotations.media.ExampleObject(
-                    value = "[{ 'id': 1, 'name': 'cliente' }, { 'id': 2, 'name': 'dono_restaurante' }]"
+                    value = "[ {\n  \"id\": 1, \n  \"name\": \"CLIENTE\", \n  \"description\": \"Usuário do tipo cliente\"\n}, {\n  \"id\": 2, \n  \"name\": \"DONO_RESTAURANTE\", \n  \"description\": \"Proprietário de restaurante\"\n} ]"
                 )
             )
         )
@@ -133,7 +140,10 @@ public interface UserTypeControllerDocs {
 
     @Operation(
         summary = "Busca tipo de usuário por ID.",
-        description = "Retorna os dados de um tipo de usuário específico pelo ID."
+        description = "Retorna os dados de um tipo de usuário específico pelo ID.",
+        parameters = {
+            @io.swagger.v3.oas.annotations.Parameter(name = "id", description = "ID do tipo de usuário", required = true, example = "2")
+        }
     )
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Tipo de usuário encontrado.",
@@ -141,7 +151,7 @@ public interface UserTypeControllerDocs {
                 mediaType = "application/json",
                 schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = UserTypeResponseDTO.class),
                 examples = @io.swagger.v3.oas.annotations.media.ExampleObject(
-                    value = "{ 'id': 1, 'name': 'cliente' }"
+                    value = "{\n  \"id\": 1, \n  \"name\": \"CLIENTE\", \n  \"description\": \"Usuário do tipo cliente\"\n}"
                 )
             )
         ),
@@ -149,7 +159,7 @@ public interface UserTypeControllerDocs {
             content = @io.swagger.v3.oas.annotations.media.Content(
                 mediaType = "application/problem+json",
                 schema = @io.swagger.v3.oas.annotations.media.Schema(
-                    example = "{ 'type': 'https://example.com/not-found', 'title': 'UserType Not Found', 'status': 404, 'detail': 'Tipo de usuário não encontrado.', 'instance': '/api/v1/user-type/find-by-id' }"
+                    example = "{\n  \"type\": \"https://example.com/not-found\",\n  \"title\": \"UserType Not Found\",\n  \"status\": 404,\n  \"detail\": \"Tipo de usuário não encontrado.\",\n  \"instance\": \"/api/v1/user-type/find-by-id\"\n}"
                 )
             )
         )

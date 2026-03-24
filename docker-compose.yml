@@ -36,8 +36,6 @@ services:
     depends_on:
       mysql:
         condition: service_healthy
-    volumes:
-      - ./src/main/resources:/app/resources:ro
     restart: unless-stopped
 volumes:
   db_data:

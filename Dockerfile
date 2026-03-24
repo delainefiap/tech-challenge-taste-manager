@@ -1,3 +1,4 @@
+# syntax=docker/dockerfile:1.4
 # Estágio de Build
 FROM maven:3.9.6-eclipse-temurin-21 AS build
 WORKDIR /app
@@ -6,12 +7,13 @@ WORKDIR /app
 COPY pom.xml mvnw ./
 COPY .mvn .mvn
 
-# Download dependencies (cacheable layer)
-RUN mvn -B dependency:go-offline
+# Download dependencies (cacheable layer) using BuildKit cache mount for Maven local repo
+# Requires BuildKit: set DOCKER_BUILDKIT=1 when running `docker build` or enable in daemon
+RUN --mount=type=cache,target=/root/.m2 mvn -B dependency:go-offline
 
-# Now copy sources and build
+# Now copy sources and build (use the same cache mount so dependencies are reused)
 COPY src ./src
-RUN mvn -B package -DskipTests
+RUN --mount=type=cache,target=/root/.m2 mvn -B package -DskipTests
 
 # Estágio de Produção
 FROM eclipse-temurin:21-jre

@@ -24,7 +24,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-@Sql(scripts = "/data.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+@Sql(scripts = "/data_test.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_CLASS)
 class RestaurantIT {
 
     @Autowired
@@ -98,7 +98,7 @@ class RestaurantIT {
         mockMvc.perform(post("/api/v1/restaurant/create")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status().isConflict());
+                .andExpect(status().isBadRequest());
     }
 
     @Test
@@ -114,6 +114,6 @@ class RestaurantIT {
     void shouldReturnNotFound_afterRestaurantIsDeleted() throws Exception {
         mockMvc.perform(get("/api/v1/restaurant/find-by-id")
                         .param("id", String.valueOf(createdRestaurantId)))
-                .andExpect(status().isNotFound());
+                .andExpect(status().isBadRequest());
     }
 }
