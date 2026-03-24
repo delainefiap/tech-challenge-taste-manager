@@ -24,13 +24,16 @@ public interface MenuControllerDocs {
     @Operation(
         summary = "Cria itens do cardápio para um restaurante",
         description = "Cria uma lista de novos itens do cardápio associados a um restaurante específico",
+        parameters = {
+            @io.swagger.v3.oas.annotations.Parameter(name = "restaurantId", description = "ID do restaurante", required = true, example = "1")
+        },
         requestBody = @RequestBody(
             required = true,
             content = @io.swagger.v3.oas.annotations.media.Content(
                 mediaType = "application/json",
                 schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = MenuRequestDTO.class),
                 examples = @io.swagger.v3.oas.annotations.media.ExampleObject(
-                    value = "[{\n  \"name\": \"Pizza Margherita\",\n  \"description\": \"Classic pizza with tomatoes and mozzarella\",\n  \"price\": 25.50\n}]"
+                    value = "[{\n  \"name\": \"cebola\",\n  \"description\": \"Pizza com molho de tomate, mussarela e manjericão.\",\n  \"price\": 525.50,\n  \"availableOnlyAtRestaurant\": true,\n  \"imagePath\": \"/images/pizza-margherita.jpg\"\n}, {\n  \"name\": \"bacon\",\n  \"description\": \"Lasanha de carne com molho branco.\",\n  \"price\": 530.00,\n  \"availableOnlyAtRestaurant\": true,\n  \"imagePath\": \"/images/lasanha.jpg\"\n}]"
                 )
             )
         )
@@ -46,7 +49,7 @@ public interface MenuControllerDocs {
             content = @io.swagger.v3.oas.annotations.media.Content(
                 mediaType = "application/problem+json",
                 schema = @io.swagger.v3.oas.annotations.media.Schema(
-                    example = "{ 'type': 'https://example.com/validation-error', 'title': 'Validation Error', 'status': 400, 'detail': 'Erro de validação nos campos enviados.', 'instance': '/api/v1/menu/create/{restaurantId}' }"
+                    example = "{\n  \"type\": \"https://example.com/validation-error\", \n  \"title\": \"Validation Error\", \n  \"status\": 400, \n  \"detail\": \"Erro de validação nos campos enviados.\", \n  \"instance\": \"/api/v1/menu/create/{restaurantId}\" \n}"
                 )
             )
         ),
@@ -54,7 +57,7 @@ public interface MenuControllerDocs {
             content = @io.swagger.v3.oas.annotations.media.Content(
                 mediaType = "application/problem+json",
                 schema = @io.swagger.v3.oas.annotations.media.Schema(
-                    example = "{ 'type': 'https://example.com/not-found', 'title': 'Restaurant Not Found', 'status': 404, 'detail': 'Restaurant with id 1 not found', 'instance': '/api/v1/menu/create/1' }"
+                    example = "{\n  \"type\": \"https://example.com/not-found\", \n  \"title\": \"Restaurant Not Found\", \n  \"status\": 404, \n  \"detail\": \"Restaurant with id 1 not found\", \n  \"instance\": \"/api/v1/menu/create/1\" \n}"
                 )
             )
         )
@@ -66,7 +69,11 @@ public interface MenuControllerDocs {
 
     @Operation(
         summary = "Lista todos os itens do cardápio",
-        description = "Retorna uma lista paginada de todos os itens do cardápio"
+        description = "Retorna uma lista paginada de todos os itens do cardápio",
+        parameters = {
+            @io.swagger.v3.oas.annotations.Parameter(name = "page", description = "Página (a partir de 1)", required = true, example = "1"),
+            @io.swagger.v3.oas.annotations.Parameter(name = "size", description = "Tamanho da página", required = true, example = "40")
+        }
     )
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Lista de itens retornada com sucesso",
@@ -83,7 +90,10 @@ public interface MenuControllerDocs {
 
     @Operation(
         summary = "Lista itens do cardápio de um restaurante",
-        description = "Retorna todos os itens do cardápio de um restaurante específico"
+        description = "Retorna todos os itens do cardápio de um restaurante específico",
+        parameters = {
+            @io.swagger.v3.oas.annotations.Parameter(name = "id", description = "ID do restaurante", required = true, example = "1")
+        }
     )
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Lista de itens do restaurante retornada com sucesso",
@@ -96,7 +106,7 @@ public interface MenuControllerDocs {
             content = @io.swagger.v3.oas.annotations.media.Content(
                 mediaType = "application/problem+json",
                 schema = @io.swagger.v3.oas.annotations.media.Schema(
-                    example = "{ 'type': 'https://example.com/not-found', 'title': 'Restaurant Not Found', 'status': 404, 'detail': 'Restaurant not found', 'instance': '/api/v1/menu/find-by-restaurant' }"
+                    example = "{\n  \"type\": \"https://example.com/not-found\", \n  \"title\": \"Restaurant Not Found\", \n  \"status\": 404, \n  \"detail\": \"Restaurant not found\", \n  \"instance\": \"/api/v1/menu/find-by-restaurant\" \n}"
                 )
             )
         )
@@ -106,7 +116,10 @@ public interface MenuControllerDocs {
 
     @Operation(
         summary = "Busca item por ID",
-        description = "Retorna um item do cardápio pelo seu ID"
+        description = "Retorna um item do cardápio pelo seu ID",
+        parameters = {
+            @io.swagger.v3.oas.annotations.Parameter(name = "id", description = "ID do item", required = true, example = "2")
+        }
     )
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Item encontrado",
@@ -119,7 +132,7 @@ public interface MenuControllerDocs {
             content = @io.swagger.v3.oas.annotations.media.Content(
                 mediaType = "application/problem+json",
                 schema = @io.swagger.v3.oas.annotations.media.Schema(
-                    example = "{ 'type': 'https://example.com/not-found', 'title': 'Menu Item Not Found', 'status': 404, 'detail': 'Menu item not found', 'instance': '/api/v1/menu/find-by-id/1' }"
+                    example = "{\n  \"type\": \"https://example.com/not-found\", \n  \"title\": \"Menu Item Not Found\", \n  \"status\": 404, \n  \"detail\": \"Menu item not found\", \n  \"instance\": \"/api/v1/menu/find-by-id/1\" \n}"
                 )
             )
         )
@@ -130,13 +143,17 @@ public interface MenuControllerDocs {
     @Operation(
         summary = "Atualiza um item do cardápio",
         description = "Atualiza as informações de um item do cardápio existente",
+        parameters = {
+            @io.swagger.v3.oas.annotations.Parameter(name = "restaurantId", description = "ID do restaurante", required = true, example = "2"),
+            @io.swagger.v3.oas.annotations.Parameter(name = "itemId", description = "ID do item a ser atualizado", required = true, example = "2")
+        },
         requestBody = @RequestBody(
             required = true,
             content = @io.swagger.v3.oas.annotations.media.Content(
                 mediaType = "application/json",
                 schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = MenuUpdateRequestDTO.class),
                 examples = @io.swagger.v3.oas.annotations.media.ExampleObject(
-                    value = "{\n  \"name\": \"Pizza Calabresa\",\n  \"description\": \"Delicious calabresa pizza\",\n  \"price\": 30.00\n}"
+                    value = "{\n  \"name\": \"cebolas\",\n  \"description\": \"Pizza com molho de tomate, mussarela e manjericão.\",\n  \"price\": 525.50,\n  \"availableOnlyAtRestaurant\": true,\n  \"imagePath\": \"/images/pizza-margherita.jpg\"\n}"
                 )
             )
         )
@@ -152,7 +169,7 @@ public interface MenuControllerDocs {
             content = @io.swagger.v3.oas.annotations.media.Content(
                 mediaType = "application/problem+json",
                 schema = @io.swagger.v3.oas.annotations.media.Schema(
-                    example = "{ 'type': 'https://example.com/validation-error', 'title': 'Validation Error', 'status': 400, 'detail': 'Erro de validação nos campos enviados.', 'instance': '/api/v1/menu/update' }"
+                    example = "{\n  \"type\": \"https://example.com/validation-error\", \n  \"title\": \"Validation Error\", \n  \"status\": 400, \n  \"detail\": \"Erro de validação nos campos enviados.\", \n  \"instance\": \"/api/v1/menu/update\" \n}"
                 )
             )
         ),
@@ -160,7 +177,7 @@ public interface MenuControllerDocs {
             content = @io.swagger.v3.oas.annotations.media.Content(
                 mediaType = "application/problem+json",
                 schema = @io.swagger.v3.oas.annotations.media.Schema(
-                    example = "{ 'type': 'https://example.com/not-found', 'title': 'Menu Item Not Found', 'status': 404, 'detail': 'Menu item not found', 'instance': '/api/v1/menu/update' }"
+                    example = "{\n  \"type\": \"https://example.com/not-found\", \n  \"title\": \"Menu Item Not Found\", \n  \"status\": 404, \n  \"detail\": \"Menu item not found\", \n  \"instance\": \"/api/v1/menu/update\" \n}"
                 )
             )
         )
@@ -173,7 +190,11 @@ public interface MenuControllerDocs {
 
     @Operation(
         summary = "Exclui um item do cardápio",
-        description = "Remove um item do cardápio do sistema"
+        description = "Remove um item do cardápio do sistema",
+        parameters = {
+            @io.swagger.v3.oas.annotations.Parameter(name = "restaurantId", description = "ID do restaurante", required = true, example = "1"),
+            @io.swagger.v3.oas.annotations.Parameter(name = "restaurantItemNumber", description = "Número do item no restaurante", required = true, example = "1")
+        }
     )
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Item excluído com sucesso",
@@ -186,7 +207,7 @@ public interface MenuControllerDocs {
             content = @io.swagger.v3.oas.annotations.media.Content(
                 mediaType = "application/problem+json",
                 schema = @io.swagger.v3.oas.annotations.media.Schema(
-                    example = "{ 'type': 'https://example.com/not-found', 'title': 'Menu Item Not Found', 'status': 404, 'detail': 'Menu item not found', 'instance': '/api/v1/menu/delete-item' }"
+                    example = "{\n  \"type\": \"https://example.com/not-found\", \n  \"title\": \"Menu Item Not Found\", \n  \"status\": 404, \n  \"detail\": \"Menu item not found\", \n  \"instance\": \"/api/v1/menu/delete-item\" \n}"
                 )
             )
         )
@@ -196,7 +217,10 @@ public interface MenuControllerDocs {
 
     @Operation(
         summary = "Exclui todos os itens do cardápio de um restaurante",
-        description = "Remove todos os itens do cardápio associados a um restaurante"
+        description = "Remove todos os itens do cardápio associados a um restaurante",
+        parameters = {
+            @io.swagger.v3.oas.annotations.Parameter(name = "restaurantId", description = "ID do restaurante", required = true, example = "1")
+        }
     )
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Itens excluídos com sucesso",
@@ -209,7 +233,7 @@ public interface MenuControllerDocs {
             content = @io.swagger.v3.oas.annotations.media.Content(
                 mediaType = "application/problem+json",
                 schema = @io.swagger.v3.oas.annotations.media.Schema(
-                    example = "{ 'type': 'https://example.com/not-found', 'title': 'Restaurant Not Found', 'status': 404, 'detail': 'Restaurant not found', 'instance': '/api/v1/menu/delete-all/1' }"
+                    example = "{\n  \"type\": \"https://example.com/not-found\", \n  \"title\": \"Restaurant Not Found\", \n  \"status\": 404, \n  \"detail\": \"Restaurant not found\", \n  \"instance\": \"/api/v1/menu/delete-all/1\" \n}"
                 )
             )
         )

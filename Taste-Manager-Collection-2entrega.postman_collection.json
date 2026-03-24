@@ -1,0 +1,777 @@
+{
+  "info": {
+    "_postman_id": "01186e71-fb4a-42b1-a69e-cbe1a473ebab",
+    "name": "Taste-Manager-Collection-2entrega",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "45491663"
+  },
+  "item": [
+    {
+      "name": "UserController",
+      "item": [
+        {
+          "name": "/create",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"Ana Teste\",\n    \"email\": \"ana.teste@email.com\",\n    \"login\": \"anatestelogin\",\n    \"password\": \"senhaAna123\",\n    \"userTypeId\": {\n        \"id\": 2\n    },\n    \"address\": \"Rua Nova, 100\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/v1/user/create",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "v1",
+                "user",
+                "create"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "/update",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"Carlos Teste\",\n    \"email\": \"carlos.teste@email.com\",\n    \"userTypeId\": {\n        \"id\": 2\n    },\n    \"address\": \"Rua Teste, 200\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/v1/user/update/1",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "v1",
+                "user",
+                "update",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "/change-password",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"oldPassword\": \"senha456\",\n    \"newPassword\": \"novaSenha456\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/v1/user/change-password/4",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "v1",
+                "user",
+                "change-password",
+                "4"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "/delete",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/v1/user/delete?id=3",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "v1",
+                "user",
+                "delete"
+              ],
+              "query": [
+                {
+                  "key": "id",
+                  "value": "3"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "/validate-login",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/v1/user/validate-login?login=anatestelogin&password=senhaAna123",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "v1",
+                "user",
+                "validate-login"
+              ],
+              "query": [
+                {
+                  "key": "login",
+                  "value": "anatestelogin"
+                },
+                {
+                  "key": "password",
+                  "value": "senhaAna123"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "/find-all",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/v1/user/find-all?page=1&size=40",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "v1",
+                "user",
+                "find-all"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "size",
+                  "value": "40"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "/find-by-name",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/v1/user/find-by-name?name=test",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "v1",
+                "user",
+                "find-by-name"
+              ],
+              "query": [
+                {
+                  "key": "name",
+                  "value": "test"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "UserTypeController",
+      "item": [
+        {
+          "name": "/create",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"dedededea\",\n  \"description\": \"oq ue eu quiser\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/v1/user-type/create",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "v1",
+                "user-type",
+                "create"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "/find-all",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/v1/user-type/find-all?page=1&size=40",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "v1",
+                "user-type",
+                "find-all"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1",
+                  "type": "text"
+                },
+                {
+                  "key": "size",
+                  "value": "40",
+                  "type": "text"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "/find-by-id",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/v1/user-type/find-by-id?id=2",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "v1",
+                "user-type",
+                "find-by-id"
+              ],
+              "query": [
+                {
+                  "key": "id",
+                  "value": "2"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "/update",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"name\": \"clientela\",\r\n  \"description\": \"oq ue eu quiser\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/v1/user-type/update/2",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "v1",
+                "user-type",
+                "update",
+                "2"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "/delete",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"name\": \"clientela\",\r\n  \"description\": \"oq ue eu quiser\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/v1/user-type/delete?id=3",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "v1",
+                "user-type",
+                "delete"
+              ],
+              "query": [
+                {
+                  "key": "id",
+                  "value": "3"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "RestaurantController",
+      "item": [
+        {
+          "name": "/create",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Restaurante 2\",\n  \"address\": \"Rua Exemplo, 123\",\n  \"typeKitchen\": \"Italiana\",\n  \"openingHours\": \"10:00-22:00\",\n  \"ownerId\": 2\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/v1/restaurant/create",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "v1",
+                "restaurant",
+                "create"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "/find-all",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/v1/restaurant/find-all?page=1&size=40",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "v1",
+                "restaurant",
+                "find-all"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "size",
+                  "value": "40"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "/find-by-id",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/v1/restaurant/find-by-id?id=1",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "v1",
+                "restaurant",
+                "find-by-id"
+              ],
+              "query": [
+                {
+                  "key": "id",
+                  "value": "1"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "/update",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Restaurante Atualizado\",\n  \"address\": \"Rua Atualizada, 456\",\n  \"typeKitchen\": \"Japonesa\",\n  \"openingHours\": \"11:00-23:00\",\n  \"ownerId\": 2\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/v1/restaurant/update/1",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "v1",
+                "restaurant",
+                "update",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "/delete",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/v1/restaurant/delete?id=3",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "v1",
+                "restaurant",
+                "delete"
+              ],
+              "query": [
+                {
+                  "key": "id",
+                  "value": "3"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "MenuController",
+      "item": [
+        {
+          "name": "/created",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "[\n    {\n      \"name\": \"cebola \",\n      \"description\": \"Pizza com molho de tomate, mussarela e manjericão.\",\n      \"price\": 525.50,\n      \"availableOnlyAtRestaurant\": true,\n      \"imagePath\": \"/images/pizza-margherita.jpg\"\n    },\n    {\n      \"name\": \"bacon\",\n      \"description\": \"Lasanha de carne com molho branco.\",\n      \"price\": 530.00,\n      \"availableOnlyAtRestaurant\": true,\n      \"imagePath\": \"/images/lasanha.jpg\"\n    }\n]",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/v1/menu/create/1",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "v1",
+                "menu",
+                "create",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "/find-all",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/v1/menu/find-all?page=1&size=40",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "v1",
+                "menu",
+                "find-all"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "size",
+                  "value": "40"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "/find-all-by-restaurant",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/v1/menu/find-by-restaurant?id=1",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "v1",
+                "menu",
+                "find-by-restaurant"
+              ],
+              "query": [
+                {
+                  "key": "id",
+                  "value": "1"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "/update",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"cebolas \",\n    \"description\": \"Pizza com molho de tomate, mussarela e manjericão.\",\n    \"price\": 525.50,\n    \"availableOnlyAtRestaurant\": true,\n    \"imagePath\": \"/images/pizza-margherita.jpg\"\n\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/v1/menu/update?restaurantId=2&itemId=2",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "v1",
+                "menu",
+                "update"
+              ],
+              "query": [
+                {
+                  "key": "restaurantId",
+                  "value": "2"
+                },
+                {
+                  "key": "itemId",
+                  "value": "2"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "/delete-item",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/v1/menu/delete-item?restaurantId=1&restaurantItemNumber=1",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "v1",
+                "menu",
+                "delete-item"
+              ],
+              "query": [
+                {
+                  "key": "restaurantId",
+                  "value": "1"
+                },
+                {
+                  "key": "restaurantItemNumber",
+                  "value": "1"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "/delete-all",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/v1/menu/delete-all/1?restaurantId=2",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "v1",
+                "menu",
+                "delete-all",
+                "1"
+              ],
+              "query": [
+                {
+                  "key": "restaurantId",
+                  "value": "2"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}
